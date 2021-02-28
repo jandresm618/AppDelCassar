@@ -4,40 +4,87 @@ import matplotlib.pyplot as plt
 from datetime import date
 from datetime import datetime, timedelta
 
+def diffStrings(string1,string2):
+	strF = ""
+	cont1 = 0
+	cont2 = 0
+	for i in string1:
+		for j in string2:			
+			if cont1 == cont2 or cont2 > len(string1) or cont1 > len(string2):
+				print("Valida los numeros")
+				print(i," - ",j)
+				if not (i == j):
+					print("Valida las letras")
+					strF += i
+					break
+			cont2 += 1
+		cont2 = 0	
+		cont1 += 1
+	print("STring FINAL ",strF)	
+	return strF
+def overShape(string1,string2):
+	strF = ""
+	if len(string1) > len(string2):
+		strF = string1[len(string2)+1:len(string1)+1]
+	elif len(string1) < len(string2):
+		strF = string2[len(string1)+1:len(string2)+1]
+	return strF					
+
+
 #CLASE InfoContainer: Esta clase se encarga de modelar el InfoContainer del negocio
 class InfoContainer(object):
 
 	def __init__(self):
-
+		self.cash_closed = False
+		self.total_soldOut = 0
+		self.total_cashIn = 0
+		self.total_QR = 0
+		self.total_bought = 0
+		self.total_cashOut = 0
+		
 		self.data_list=[]
 		self.search_list=[]
 		self.provider_list=[]
-		self.excel_name="Codigos.xlsx"
+		self.excel_name = "Archivos/Codigos.xlsx"
+		self.out_path = "Archivos/salida_productos.csv"
+		self.in_path = "Archivos/entrada_productos.csv"
+		self.devoluciones_path = "Archivos/devoluciones.csv"
+		self.pedidos_path = "Archivos/pedidos.csv"
 		self.productos_columns=('Codigo', 'DESCRIPCION', 'PRECIO', 'Cantidad Inicial',  'Cantidad Actual', 'Rotacion','Granel','PROVEEDOR')
 		self.ventas_columns=('ID VENTA','CODIGO','DESCRIPCION','PRECIO','NOMBRE VENDEDOR','NOMBRE COMPRADOR')
+		
 		self.delivery_columns=('ID PEDIDO','ESTADO','DESCRIPCION','NOMBRE CLIENTE','TELEFONO CLIENTE','DIRECCION CLIENTE','NOMBRE VENDEDOR')
 		self.trust_columns=('ID FIADO','ESTADO','DESCRIPCION','NOMBRE CLIENTE','NOMBRE VENDEDOR')
 		self.proveedores_columns=('NOMBRE','NIT','DIAS','TELEFONO','CORREO')
 		self.compras_columns=('ID COMPRA','CODIGO','DESCRIPCION','PRECIO','CANTIDAD','NOMBRE PROVEEDOR','NOMBRE TRABAJADOR')
+		
+		"""ARCHIVOS SIMPLIFICADOS"""
+		self.out_columns = ('FECHA','HORA','CODIGO','DESCRIPCION','TIPO','PRECIO','FORMA DE PAGO','NOMBRE VENDEDOR','NOMBRE COMPRADOR')
+		self.in_columns = ('FECHA','HORA','CODIGO','DESCRIPCION','COMPRA/CAMBIO','GRANEL','CANTIDAD','PRECIO','PROVEEDOR','NOMBRE VENDEDOR')
+		self.pedidos_columns = ('FECHA 1','FECHA 2','DECRIPCION','GRANEL','CANTIDAD','PRECIO','PROVEEDOR','NOMBRE VENDEDOR')
+		self.return_columns = ('ID DEV','CODIGO','DESCRIPCION','PRECIO','FORMA DE DEVOLUCION','NOMBRE VENDEDOR','NOMBRE COMPRADOR')
+		
 		self.page='Hoja 1'
 		self.dataUpload()
+		
+	def closeCash(self):
+		self.cash_closed = True
 
-	#METODOS GET#	
+	#METODOS GET#
+	def getCashState(self):
+		return self.cash_closed	
 	def getDfInventario(self):
 		return self.dfInventario
 	def getDfVentas(self):
 		return self.dfVentas
 	def getDfProveedores(self):
 		return self.dfProveedores		
-
 	def getProducts(self):
 		return self.data_list
-
 	def getProviders(self):
 		return self.provider_list
-
 	def getProvidersNames(self):
-		providersNames=[]
+		providersNames = []
 		for i in self.provider_list:
 			providersNames.append(i.getNombre())
 		return providersNames	
@@ -50,18 +97,19 @@ class InfoContainer(object):
 		return date.today()	+ timedelta(days=-1)	
 	def getNow(self):
 		return	datetime.now()
-	def getWeekDays(self):
+	def getWeekDays(self,limit):
 		days=[]
-		for i in range(6):
+		for i in range(limit):
 			days.append(date.today()	+ timedelta(days=-i))
 		return days					
 
 
 	#METODOS DE CONVERSION DE DATOS#
+		"""RETORNA MATRIZ DE DATAFRAME"""
 	def df2List(self,dataframe):
 		listReturn=[]
 		listAux=[]
-		listColumns=list(dataframe)
+		listColumns = list(dataframe)
 		cont=0
 		for serie in dataframe[listColumns[0]]:			
 			listAux=[]	
@@ -70,12 +118,10 @@ class InfoContainer(object):
 			listReturn.append(listAux)
 			cont+=1				
 		return listReturn
-			
-
-	def df_to_list(self):
-		cont=0
-		list_value=[]	
-		
+		"""CARGA PRODUCTOS DEL DATAFRAME"""
+	def uploadProducts(self):
+		cont = 0
+		list_value = []			
 		for elem in self.dfInventario[self.productos_columns[0]]:
 			for column in self.productos_columns:
 				elem=self.dfInventario[column].loc[cont]
@@ -85,8 +131,10 @@ class InfoContainer(object):
 			list_value.clear()
 			cont=cont+1
 		cont=0
-
+	def uploadProviders(self):
 		try:
+			cont = 0
+			list_value = []
 			for row in self.dfProveedores[self.proveedores_columns[0]]:				
 				for column in self.proveedores_columns:
 					elem=self.dfProveedores[column].loc[cont]
@@ -97,77 +145,155 @@ class InfoContainer(object):
 				cont+=1
 			print("Proveedores Cargados Correctamente ",len(self.provider_list))		
 		except Exception as e:
+			print(e)
 			print("!!!!!!!!!!!!!!!!!!No se pudo cargar los proveedores!!!!!!!!!!")
-					
 	def list_to_df(self):
-		cont=0
-		self.dfInventario=pd.DataFrame(columns=self.productos_columns)
+		cont = 0
+		self.dfInventario = pd.DataFrame(columns=self.productos_columns)
 		for i in self.data_list:
-			self.dfInventario.loc[cont]=i.atributes()
-			cont=cont+1	
+			self.dfInventario.loc[cont] = i.atributes()
+			cont=cont+1
 		cont=0
 		self.dfProveedores=pd.DataFrame(columns=self.proveedores_columns)
 		for i in self.provider_list:
-			self.dfProveedores.loc[cont]=i.atributes()
+			self.dfProveedores.loc[cont] = i.atributes()
 			cont=cont+1			
 
 
-	#METODOS DE CARGA#		
+	#METODOS DE CARGA#
 	def dataUpload(self):
-		col_types={"Codigo":str, "DESCRIPCION":str}
-		self.dfInventario=pd.read_excel(self.excel_name,sheet_name='Hoja 1',dtype=col_types)
+		#Carga los Datos del Archivo CODIGOS.xlsx HOJA 1
+		col_types = {"Codigo":str, "DESCRIPCION":str}
+		self.dfInventario = pd.read_excel(self.excel_name,sheet_name='Hoja 1',dtype=col_types)
 		#self.dfInventario=self.dfInventario.replace(np.nan,0).ffill()
 		print("Productos cargados correctamente. ", len(self.data_list))
 
-		self.dfVentas=pd.read_excel(self.excel_name,sheet_name='Hoja 2',index_col=[0])
-		self.dfVentas=self.dfVentas.replace(0,np.nan).ffill()
+		#Carga los Datos del Archivo CODIGOS.xlsx HOJA 2
+		self.dfVentas = pd.read_excel(self.excel_name,sheet_name='Hoja 2',index_col=[0])
+		self.dfVentas = self.dfVentas.replace(0,np.nan).ffill()
 
-		col_types={"NOMBRE":str, "NIT":str,"DIAS":str,"TELEFONO":str}
-		self.dfProveedores=pd.read_excel(self.excel_name,sheet_name='Hoja 3',dtype=col_types)
-		self.dfProveedores=self.dfProveedores.replace(0,np.nan).ffill()
+		#Carga los Datos del Archivo CODIGOS.xlsx HOJA 3
+		col_types = {"NOMBRE":str, "NIT":str,"DIAS":str,"TELEFONO":str}
+		self.dfProveedores = pd.read_excel(self.excel_name,sheet_name='Hoja 3',dtype=col_types)
+		self.dfProveedores = self.dfProveedores.replace(0,np.nan).ffill()
+		
+		#Carga los Datos de los Archivos CSV
+		self.dfOut = pd.read_csv(self.out_path)
+		self.dfIn = pd.read_csv(self.in_path)
+		self.dfPedidos = pd.read_csv(self.pedidos_path)
+		self.dfDevoluciones = pd.read_csv(self.devoluciones_path)
+				
 
-		self.df_to_list()
+		#Carga de lista de Productos y Proveedores
+		self.uploadProducts()
+		self.uploadProviders()
 
 	#METODOS DE GUARDADO#	
 	def save(self):
 		print("Guardandooo....")
 		print(self.dfVentas)
 
-		df_to_save=self.list_to_df()
-		grabar=pd.ExcelWriter(self.excel_name)
+		df_to_save = self.list_to_df()
+		grabar = pd.ExcelWriter(self.excel_name)
 		df_to_save.to_excel(grabar,'Hoja 1')
 
 		self.dfVentas.to_excel(grabar,'Hoja 2')
 		grabar.save()
-
-
-
 	
+	#Metodo Generalizado para Guardar
+	def guardarExcel(self,name,dataFrame,sheet):
+		guardar = pd.ExcelWriter(name)
+		dataFrame.to_excel(sheet)
+		guardar.save()
+		
+	def guardarCsv(self,name,dataFrame):
+		try:
+			dataFrame.to_csv(name)
+			return True
+		except Exception as e:
+			print("NO SE HA GUARDADO EL ARCHIVO CSV.\n",e)
+			return False
 
+	#METODOS DE MODIFICACION# 
+	#"""SE MODIFICAN LOS DATOS DE LOS DATAFRAME VENTAS"""
+	#		"""AÑADIR COLUMNA AL DATAFRAME"""
+	def addRow(self,dataFrame,listData):
+		try:
+			index = len(dataFrame.index)
+			dataFrame.loc[index] = listData
+		except Exception as e:
+			print(e)
+			print("Error al Agregar Fila al DataFrame")
+	def tabOutData(self,productData,typo,shape,buyername,username):
+		aux = []
+		aux.append(str(date.today())) #Fecha
+		aux.append(overShape(str(date.today()),str(datetime.now()))) #Hora
+		aux.append(productData['text']) #Codigo
+		aux.append(productData['values'][0]) #Descripcion
+		aux.append(typo) #Tipo de Salida
+		aux.append(productData['values'][1]) # Precio
+		aux.append(shape) # Forma de Pago
+		aux.append(username) # Nombre del Vendedor
+		aux.append(buyername) # Nombre del Comprador
+		return aux
 
-	#METODOS DE MODIFICACION# SE MODIFICAN LOS DATOS DE LOS DATAFRAME	
+	def addOut(self,products,typo,shape,buyername,username):
+		aux = []
+		auxVenta = 0
+		try:
+			for product in products:
+				if self.validarDatos(product):
+					#Tabulacion de Datos
+					aux = self.tabOutData(product,typo,shape,buyername,username)
+					price = int(product['values'][1])
+					#Agregar Datos Economicos
+					auxVenta += price
+					#Añadir datos al DataFrame
+					self.addRow(self.dfOut,aux)
+					aux.clear()
+			#Guardar Datos
+			print(self.dfOut)
+			print("Venta Total: ",auxVenta)
+			return auxVenta
+			
+		except Exception as e:
+			print("!!!!!!!!!!!!!!!!!!No se pudo completar!!!!!!!!!!\n",e)
+			return 0
+	
 	def addSale(self,sold_Product,buyername,username):	
 		cont=0		
 		new_df2=pd.DataFrame(columns=self.ventas_columns)
 		try:
-			for product in sold_Product:				
-				new_df2.loc[cont]=[str(date.today())+str(datetime.now()),int(product['text']),product['values'][0],int(product['values'][1]),buyername,username]
+			for product in sold_Product:
+				print("HORA: ",overShape(str(date.today()),str(datetime.now())))
+				#print("Dia de la semana ", date.today().weekday())							
+				new_df2.loc[cont]=[str(datetime.now()),int(product['text']),product['values'][0],int(product['values'][1]),buyername,username]
 				cont+=1
 				index=self.selectProducto([product['text'],product['values'][0]])			
 				self.data_list[index].minusCantidad(1)
-			self.dfVentas=pd.concat((self.dfVentas,new_df2))
-			print(self.dfVentas)			
+			self.dfVentas = pd.concat((self.dfVentas,new_df2))
+			#print(self.dfVentas)			
 			return self.addingSale(sold_Product)
 
 		except Exception as e:
-			print("!!!!!!!!!!!!!!!!!!No se pudo completar!!!!!!!!!!")
+			print("!!!!!!!!!!!!!!!!!!No se pudo completar!!!!!!!!!!\n",e)
 			return 0
-		else:
-			pass
-		finally:
-			pass
 
-		#INCOMPLETO		
+	#			"""ELIMINAR COLUMNA AL DATAFRAME"""
+	def deleteSale(self,item):
+		try:
+			self.dfVentas=self.deleteItemDataFrame(self.dfVentas,'ID VENTA',[item['text'],item['values']])
+			print("Se elimino del dataframe")				
+		except Exception as e:
+			print("Error al eliminar del dataframe")
+		print("Nuevo DataFrame")
+		print(self.dfVentas)	
+		return self.dfVentas								
+
+
+		#INCOMPLETO
+	#"""SE MODIFICAN LOS DATOS DE LOS DATAFRAME DOMICILIOS"""
+	#			"""AÑADIR COLUMNA AL DATAFRAME"""		
 	def addDelivery(self,sold_Product,clientDeliveryInfo,username):
 		print("Para domicilio: ")
 		print("Direccion: ",clientDeliveryInfo[0])
@@ -181,7 +307,6 @@ class InfoContainer(object):
 
 		return self.addingSale(sold_Product)	
 
-		#INCOMPLETO		
 	def addTrusted(self,sold_Product,clientTrust,username):
 		print("Para fiado: ")
 		print("Nombre: ",clientTrust)
@@ -192,17 +317,30 @@ class InfoContainer(object):
 			self.data_list[index].minusCantidad(1)				
 		return self.addingSale(sold_Product)	
 
-	
+	def addIn(self,buyList,provider,username):
+		cont = 0
+		aux = []
+		for product in buyList:
+			aux.append(str(date.today())) #Fecha
+			aux.append(overShape(str(date.today()),str(datetime.now()))) #Hora
+			print(product[0],product[1],product[2],product[3],product[4],product[5],product[6])
+			#Codigo#Decripcion#Cambio/Compra#Granel	#Cantidad#Con o sin Iva #Precio
+			compra = product[2]
+			granel = product[3]
+			iva = product[5]
+			
+			cont += 1
 
 	def addBuy(self,bought_Product,listNewProducts,provider,username):	
-		cont=0		
-		new_df2=pd.DataFrame(columns=self.compras_columns)
+		cont = 0
+		new_df2 = pd.DataFrame(columns=self.compras_columns)
 		try:
 			for product in bought_Product:
-				new_df2.loc[cont]=[str(date.today())+str(datetime.now()),int(product['text']),product['values'][0],int(product['values'][1]),int(product['values'][2]),provider,username]
+				new_df2.loc[cont] = [str(datetime.now()),int(product['text']),product['values'][0],int(product['values'][1]),int(product['values'][2]),provider,username]
 				cont+=1
-				index=self.selectProducto([product['text'],product['values'][0]])
+				index = self.selectProducto([product['text'],product['values'][0]])
 				self.data_list[index].plusCantidad(product['values'][2])
+				#TENER EN CUENTA CUANDO NO ES CON IVA
 				self.data_list[index].setPrecioVenta(product['values'][1])
 
 			#self.dfVentas=pd.concat((self.dfVentas,new_df2))
@@ -210,9 +348,8 @@ class InfoContainer(object):
 			return self.addingBuy(bought_Product,listNewProducts)
 
 		except Exception as e:
-			print("!!!!!!!!!!!!!!!!!!No se pudo completar!!!!!!!!!!")
+			print("!!!!!!!!!!!!!!!!!!No se pudo completar la compra!!!!!!!!!!")
 			return 0
-					
 	#METODOS DE BUSQUEDA# SE BUSCA DATOS EN LOS DATAFRAMES
 	def searchProductByCode(self,code):
 		return self.searchDataFrame(self.dfInventario,'CODIGO',code)
@@ -235,25 +372,17 @@ class InfoContainer(object):
 		pass				
 	def searchTrustByName(self,name):
 		pass
-
-	def deleteSale(self,item):
-		try:
-			self.dfVentas=self.deleteItemDataFrame(self.dfVentas,'ID VENTA',[item['text'],item['values']])
-			print("Se elimino del dataframe")				
-		except Exception as e:
-			print("Error al eliminar del dataframe")
-		print("Nuevo DataFrame")
-		print(self.dfVentas)	
-		return self.dfVentas	
+	
 
 	def deleteItemDataFrame(self,dataframe,column,data):
 		try:
-			df=dataframe.drop(dataframe[dataframe==data].index)			
+			df = dataframe.drop(dataframe[dataframe==data].index)
+			return df			
 		except Exception as e:
 			print("No se puede ejecutar esta forma de eliminar")
-		return df
+		
 				
-
+	"""METODO DE BUSQUEDA EN DATAFRAME"""
 	def searchDataFrame(self,dataframe,column,data):
 		listThings=[]
 		cont=0
@@ -302,6 +431,7 @@ class InfoContainer(object):
 				cont+=1
 				matchCont=0				
 		#BUSQUEDA EN LISTA DE PRODUCTOS
+		
 	def searchData(self, item):
 		cont_aux=0
 		self.search_list.clear()
@@ -377,7 +507,7 @@ class InfoContainer(object):
 		if type(listData) == list:
 			for i in listData:
 				if i == '':
-					valid=False				
+					valid = False	
 		elif type(listData) == dict:
 			valid=False
 			for i in listData:
@@ -393,7 +523,7 @@ class InfoContainer(object):
 		#Declarar cada producto de la lista
 		print("Creando nuevos productos: ")			
 		for i in list_new_products:
-			product=Producto(i)
+			product = Producto(i)
 			self.data_list.append(product)
 			print("Agregado")
 
@@ -444,7 +574,6 @@ class InfoContainer(object):
 					#set de cantidad
 					i.setCantidad(valor)
 					
-
 	def setParametroGranel(self, indice):
 		for i in self.data_list:
 			if i.Indice() == indice:
@@ -491,24 +620,7 @@ class InfoContainer(object):
 			if i.Indice() == indice:
 				print("El producto escogido es: ")
 				print(i.Codigo()," - ",i.Nombre()," - ",i.Precio()," - ",i.Cantidad_O()," - ",i.Indice())			
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	
 #CLASE PROVEEDOR: Esta clase se encarga de modelar un producto en especifico
 class Proveedor(object):
 	"""docstring for Proveedores"""
@@ -540,8 +652,6 @@ class Proveedor(object):
 
 	def getNombre(self):
 		return self.nombre
-
-		
 
 #CLASE PRODUCTO: Esta clase se encarga de modelar un producto en especifico
 class Producto(object):

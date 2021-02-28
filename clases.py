@@ -3,73 +3,90 @@ from matplotlib.figure import Figure
 from tkinter import ttk 
 from tkinter import *
 from manejo_datos import *
+from tkinter import messagebox
 #from ventanas import *
 
 
-			#~~~~~~~~~~~~~~~~~~~~~~!!!!!CCCLLLAAASSSEEE!!!!!!~~~~~~~~~~~~~~~~~~~~~~#
+			#~~~~~~~~~~~~~~~~~~~~~~!!!!!FRAME MENU DE OPCIONES!!!!!!~~~~~~~~~~~~~~~~~~~~~~#
+			#~~~~~~~~~~~~~~~~~~~~~~!!!!!DISPONIBLE PARA USUARIOS!!!!!!~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~
 #Clase encargada de administrar cada funcion del programa
 class Menu(object):
-	"""docstring for Menu"""
+	"""CONSTRUCTOR DE CLASE MENU"""
 	def __init__(self):
 		super(Menu, self).__init__()
-		self.window=Tk()
+		"""INICIALIZACION DE ATRIBUTOS TKINTER"""
+		self.window = Tk()
 		self.window.attributes('-fullscreen', True)		
-		self.window.config(bg="red")
+		self.window.config(bg = "red")
 		self.window.title('DelCassarApp')
+		#self.window.state('zoomed')
 
-		#!!!!!!!!!!!!!!IMCOPLETO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		self.dictRunning={'ventas':False,'compras':False,'cuadre':False,'notificaciones':False,'balance':False}
+		"""DICT DE OPCION DE VENTANA """
+		self.dictRunning = {'ventas':False,'compras':False,'cuadre':False,'notificaciones':False,'balance':False}
 
-		self.info_Container=InfoContainer()
+		"""INICIALIZACION DE CLASE CONTENEDOR DE INFORMACION EXTERIOR"""
+		self.info_Container = InfoContainer()
 
-		#Esto es despues del Control de Usuarios
-		self.owner=True
-		self.frameInit()	
-
+		"""DUEÑO POR DEFECTO"""		
+		self.owner = True
+		
+		"""VENTANA INICIAL""" #--> SE DESEA CONTROL DE USUARIO
+		self.frameInit()			
 		self.window.mainloop()
 
 #---------- ------ METODOS DE DISEÑO ------------------------#
+	"""DISEÑO DE VENTANA INICIAL"""
 	def frameInit(self):
-		self.headerFrame=LabelFrame(self.window)
+		"""ATRIBUTOS DE HEADER"""
+		self.headerFrame = LabelFrame(self.window)
 		self.headerFrame['text']='Menú'		
 		#self.headerFrame.grid(row = 0, column= 0, columnspan=20,sticky=W + E)
 		self.headerFrame.place(x=500,y=150)
 		self.headerFrame.config(bg="white")
-
-		self.logoDelCassar=PhotoImage(file="Logo.png")
-		self.logoLabel=Label(self.headerFrame,image=self.logoDelCassar)				
-		self.logoLabel.grid(row=0,column=0,sticky= W + E, columnspan=3)	
-
-		self.saleButton=ttk.Button(self.headerFrame,command=self.saleSlot)
+		
+		"""ATRIBUTOS DE LOGO"""
+		self.logoDelCassar = PhotoImage(file = "Archivos/Logo.png")
+		self.logoLabel = Label(self.headerFrame,image = self.logoDelCassar)				
+		self.logoLabel.grid(row=0,column=0,sticky= W + E, columnspan=3)
+			
+		"""ATRIBUTOS DE BOTON OPCION VENTAS Y BUSQUEDA"""
+		self.saleButton = ttk.Button(self.headerFrame,command=self.saleSlot)
 		self.saleButton['text']='BUSQUEDA Y VENTAS'
 		self.saleButton.grid(row=1,column=0,sticky=W,padx=2,pady=10)
-
-		self.buyButton=ttk.Button(self.headerFrame,command=self.buySlot)
+		
+		"""ATRIBUTOS DE BOTON OPCION COMPRAS Y BUSQUEDA"""
+		self.buyButton = ttk.Button(self.headerFrame,command=self.buySlot)
 		self.buyButton['text']='COMPRAS Y PLANEACION'
 		self.buyButton.grid(row=2,column=0,sticky=W,padx=2,pady=10)
 
+		"""ATRIBUTOS DE BOTON OPCION CUADRE DIARIO"""
 		self.cashRegisterButton=ttk.Button(self.headerFrame,command=self.cashRegisterSlot)
 		self.cashRegisterButton['text']='CUADRE DIARIO'
 		self.cashRegisterButton.grid(row=3,column=0,sticky=W,padx=2,pady=10)
 
+		"""ATRIBUTOS DE BOTON OPCION NOTIFICACIONES"""
 		self.notifyButton=ttk.Button(self.headerFrame,command=self.notifySlot)
 		self.notifyButton['text']='NOTIFICACIONES, PEDIDOS Y RECORDATORIOS'
 		self.notifyButton.grid(row=4,column=0,sticky=W,padx=2,pady=10)
 
+		"""ATRIBUTOS DE BOTON OPCION BALANCE Y ESTADISTICAS"""
 		if self.owner:
 			self.stadisticsButton=ttk.Button(self.headerFrame,command=self.balanceSlot)
 			self.stadisticsButton['text']='BALANCE MONETARIO'
 			self.stadisticsButton.grid(row=5,column=0,sticky=W,padx=2,pady=10)
 
-		self.switchButton=ttk.Button(self.headerFrame)
+		"""ATRIBUTOS DE BOTON OPCION CAMBIO DE USUARIO"""
+		self.switchButton = ttk.Button(self.headerFrame,command=self.switchSlot)
 		self.switchButton['text']='CAMBIAR DE USUARIO'
 		self.switchButton.grid(row=6,column=0,sticky=W,padx=2,pady=10)
 
+		"""ATRIBUTOS DE BOTON OPCION SALIR"""
 		self.exitButton=ttk.Button(self.headerFrame,command=self.exitSlot)
 		self.exitButton['text']='SALIR'
 		self.exitButton.grid(row=7,column=0,sticky=W,padx=2,pady=10)		
 
+		"""FRAME """
 		self.frame=LabelFrame(self.window)
 		self.frame['text']='Bienvenidos a DelCassarApp'
 		self.frame.grid(row = 1, column= 0, columnspan=3, pady=5,padx=10)							
@@ -94,16 +111,17 @@ class Menu(object):
 
 #------------------- SLOTS DE BOTONES ------------------------------------		
 	def saleSlot(self):
+		messagebox.showinfo(message="Mensaje", title="Título")
 		self.headerDesing()	
 		self.stopRunning()
-		self.dictRunning['ventas']=True
-		self.ventas=Ventana_Ventas(self.frame,self.info_Container)		
+		self.dictRunning['ventas'] = True
+		self.ventas = OutFrame(self.frame,self.info_Container)		
 
 	def buySlot(self):
 		self.headerDesing()	
 		self.stopRunning()
-		self.dictRunning['compras']=True
-		self.compras=BuyFrame(self.frame,self.info_Container)
+		self.dictRunning['compras'] = True
+		self.compras = InFrame(self.frame,self.info_Container)
 
 	def cashRegisterSlot(self):
 		self.headerDesing()	
@@ -114,19 +132,26 @@ class Menu(object):
 	def notifySlot(self):
 		self.headerDesing()	
 		self.stopRunning()
-		self.dictRunning['notificaciones']=True
-		self.notify=Notify(self.frame,self.info_Container)
+		self.dictRunning['notificaciones'] = True
+		self.notify = Notify(self.frame,self.info_Container)
 
 	def balanceSlot(self):
 		self.headerDesing()	
 		self.stopRunning()
 		self.dictRunning['balance']=True
-		self.dataStudy=dataStudy(self.frame,self.info_Container)	
+		self.dataStudy = dataStudy(self.frame,self.info_Container)	
+		
+	def switchSlot(self):
+		print(messagebox.askretrycancel(message="¿Desea reintentar?", title="Título"))		
 
-	def exitSlot(self):	
-		self.stopRunning()
-		self.headerFrame.destroy()
-		self.window.destroy()		
+	def exitSlot(self):		
+		#print(messagebox.askyesno(message="¿Desea continuar?", title="Título"))
+		if messagebox.askokcancel(message="¿Desea continuar?", title="AVISO"):
+			self.stopRunning()
+			self.headerFrame.destroy()
+			self.window.destroy()							
+		#print(messagebox.askretrycancel(message="¿Desea reintentar?", title="Título"))	
+				
 	
 	#AGREGAR LOS BOTONES FALTANTES	
 
@@ -150,37 +175,35 @@ class Menu(object):
 					self.dataStudy.desaparecer()
 					self.dictRunning['balance']=False
 
-		#~~~~~~~~~~~~~~~~~~~~~~~~~~~~INCOMPLETO~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~						
 
-
-
-
-			#~~~~~~~~~~~~~~~~~~~~~~!!!!!CCCLLLAAASSSEEE!!!!!!~~~~~~~~~~~~~~~~~~~~~~#
+			#~~~~~~~~~~~~~~~~~~~~~~!!!!!FRAME SALIDA DE CAPITAL!!!!!!~~~~~~~~~~~~~~~~~~~~~~#
+		   #~~~~~~~~~~~~~~~~~~~~~~!!!!!DISPONIBLE PARA USUARIOS!!!!!!~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~
 #Clase encargada de mostrar la funcion de ventas
-class Ventana_Ventas(Frame):
+	#Esta clase controla toda salida de productos
+class OutFrame(Frame):
 	def __init__(self,frame,info_Container):
-		super(Ventana_Ventas, self).__init__()
+		super(OutFrame, self).__init__()
 		self.mainframe=frame
 		Frame.__init__(self, self.mainframe)
 		self.pack(fill='both', expand=True)
 
+		self.typo = 1 #Tipo de Salida (1-> Venta, 2-> Fiado, 3-> Injustificado)
 		#Bandera de permisos
-		self.owner=True # True-> es propietario
-		self.username='administrador'
+		self.owner = True # True-> es propietario
+		self.username = 'administrador'
 
 
 		#Inicializando los datos	
-		self.info_Container=info_Container
-		self.productos=self.info_Container.getProducts()
+		self.info_Container = info_Container
+		self.productos = self.info_Container.getProducts()
 	
 		#self.mainframe=frame
 
-		self.frameWidgets=[]
-		self.sellList=[]
+		self.frameWidgets = []
+		self.sellList = []
 
 		self.saleWindowDesing()
-
 
 	def getInfoContainer(self):
 		return self.info_Container
@@ -190,12 +213,11 @@ class Ventana_Ventas(Frame):
 		self.saleFrame()
 		self.saleInfoFrame()
 
-
 #---------- ------ METODOS DE DISEÑO ------------------------#
 	def searchFrame(self):
 		##################  Frame de busqueda de productos  #######################
 		self.frame=LabelFrame(self)
-		self.frame['text']='Busqueda de Productos'
+		self.frame['text'] = 'Busqueda de Productos'
 		self.frame.grid(row = 0, column= 0, columnspan=1, pady=1,padx=10)			
 
 		self.searchLabel=Label(self.frame)		
@@ -209,7 +231,7 @@ class Ventana_Ventas(Frame):
 		self.searchName.grid(row=1,column=1)
 		self.frameWidgets.append(self.searchName)
 
-		self.message=Label(self.frame,text="",fg = 'red')
+		self.message = Label(self.frame,text="",fg = 'red')
 		self.message.grid(row=2,column=0,columnspan=2,sticky=W + E)
 		self.frameWidgets.append(self.message)
 
@@ -240,8 +262,6 @@ class Ventana_Ventas(Frame):
 		self.addProductButton.grid(row=5,column=0,sticky=W + E,columnspan=2,pady=10)
 		self.frameWidgets.append(self.addProductButton)
 
-		
-
 	def saleFrame(self):	
 		##################  Frame Carrito de Ventas  #############################
 		self.frame2=LabelFrame(self)
@@ -261,32 +281,32 @@ class Ventana_Ventas(Frame):
 		self.sellConfigButton.grid(row=0,column=7,pady=1,padx=50)
 		self.frameWidgets.append(self.sellConfigButton)
 
-		self.orderConfigButton=ttk.Checkbutton(self.frame2,variable=self.check_var2,command=self.orderConfig)
-		self.orderConfigButton['text']='DOMICILIOS'
+		self.orderConfigButton = ttk.Checkbutton(self.frame2,variable=self.check_var2,command=self.trustConfig)
+		self.orderConfigButton['text']='FIADO'
 		self.orderConfigButton.grid(row=1,column=7,pady=1,padx=55)
 		self.frameWidgets.append(self.orderConfigButton)
 
-		self.trustConfigButton=ttk.Checkbutton(self.frame2,variable=self.check_var3,command=self.trustConfig)
-		self.trustConfigButton['text']='FIADOS'
+		self.trustConfigButton=ttk.Checkbutton(self.frame2,variable=self.check_var3,command=self.noConfig)
+		self.trustConfigButton['text'] = 'INJUSTIFICADO'
 		self.trustConfigButton.grid(row=2,column=7,pady=1,padx=50)
 		self.frameWidgets.append(self.trustConfigButton)
 
-		self.sellLabel=Label(self.frame2)
+		self.sellLabel = Label(self.frame2)
 		self.sellLabel['text']='Nombre del Cliente: '
 		self.sellLabel.grid(row=1,column=0,pady=1)
 		self.frameWidgets.append(self.sellLabel)
 
-		self.sellName=Entry(self.frame2)
+		self.sellName = Entry(self.frame2)
 		self.sellName.grid(row=1,column=1,pady=1)
 		self.frameWidgets.append(self.sellName)
 
-		self.message2=Label(self.frame2,text='',fg = 'red')
+		self.message2 = Label(self.frame2,text='',fg = 'red')
 		self.message2.grid(row=2,column=0,columnspan=2,sticky=W + E)
 		self.frameWidgets.append(self.message2)
 
-		self.sellTable=ttk.Treeview(self.frame2,height=9,columns=3)
+		self.sellTable = ttk.Treeview(self.frame2,height=9,columns=3)
 		self.sellTable.grid(row=3,column=0,columnspan=100,padx=1)
-		self.sellTable['columns']=['Column 2','Column 3']
+		self.sellTable['columns'] = ['Column 2','Column 3']
 		self.sellTable.heading('#0',text='Codigo',anchor=CENTER)
 		self.sellTable.heading('#1',text='Nombre',anchor=CENTER)
 		self.sellTable.heading('#2',text='Precio',anchor=CENTER)
@@ -327,8 +347,9 @@ class Ventana_Ventas(Frame):
 		self.modeLabel['text']='Seleccione la forma de pago: '
 		self.frameWidgets.append(self.modeLabel)
 
-		listPay=['','EFECTIVO','QR']
-		self.menuPay=ttk.Combobox(self.frame3,values=listPay)
+		listPay=['EFECTIVO','QR']
+		self.menuPay = ttk.Combobox(self.frame3,values=listPay)
+		self.menuPay.set('EFECTIVO')
 		self.menuPay.config(width=20)
 		self.menuPay.grid(row=2,column=1,pady=10)
 		self.frameWidgets.append(self.menuPay)
@@ -349,55 +370,51 @@ class Ventana_Ventas(Frame):
 			self.searchTable.insert("",0,text = elem.Codigo(),values=(elem.Nombre(),elem.Precio()))
 	
 	#Slot del boton añadir productos al carrito
-	def addSellProduct(self):			
+	def addSellProduct(self):
 		chosen=self.searchTable.item(self.searchTable.selection())
-		if chosen['text'] == '':		
-			self.message['text']='Por favor, seleccione un producto.'
+		if chosen['text']  ==  '' :
+			self.message['text'] = 'Por favor, seleccione un producto.'
 		else:
-			self.message['text']=''	
+			self.message['text'] = ''
 			self.sellList.append(chosen)
 			try:
 				self.updateSellTable()
 			except Exception as e:
 				self.message['text']='Por favor, seleccione un producto.'
-			else:
-				pass
-			finally:
-				pass
 
 	#Slot del boton eliminar del carrito		
 	def deleteSellProduct(self):
-		chosen=self.sellTable.item(self.sellTable.selection())		
+		chosen = self.sellTable.item(self.sellTable.selection())		
 		self.sellList.remove(chosen)		
 		try:
 			self.updateSellTable()
 		except Exception as e:
 			self.message2['text']='Por favor, seleccione un producto.'
-		else:
-			pass
-		finally:
-			pass	
-	
-
 
 	#Slot del boton Vendido
 	def saleComplete(self):
 		#Se presiona el boton "VENDIDO"
-		if self.check_var1.get() == 1:
-			saleValue=self.info_Container.addSale(self.sellList,self.username,self.username)
-			self.totalSoldLabel['text']='Valor nuevo Venta: {}'.format(saleValue)
+		shape = self.menuPay.get()
+		if not shape == '':
+			saleValue = self.info_Container.addOut(self.sellList,self.typo,shape,self.username,self.username)  #Funcion Simplificada de Venta
+			
+			if self.check_var1.get() == 1:
+				saleValue = self.info_Container.addSale(self.sellList,self.username,self.username)
+				self.totalSoldLabel['text'] = 'Valor nuevo Venta: {}'.format(saleValue)
 
-		elif self.check_var2.get() == 1:
-			saleValue=self.info_Container.addDelivery(self.sellList,['Calle 40','Javier Mosco','3108207116'],self.username)
-			self.totalSoldLabel['text']='Valor nuevo Venta: {}'.format(saleValue)
+			elif self.check_var2.get() == 1:
+				saleValue=self.info_Container.addDelivery(self.sellList,['Calle 40','Javier Mosco','3108207116'],self.username)
+				self.totalSoldLabel['text']='Valor nuevo Venta: {}'.format(saleValue)
 
-		elif self.check_var3.get() == 1:
-			saleValue=self.info_Container.addTrusted(self.sellList,'Marta',self.username)
-			self.totalSoldLabel['text']='Valor nuevo Venta: {}'.format(saleValue)
+			elif self.check_var3.get() == 1:
+				saleValue=self.info_Container.addTrusted(self.sellList,'Marta',self.username)
+				self.totalSoldLabel['text']='Valor nuevo Venta: {}'.format(saleValue)
 
-		self.sellList.clear()
-		self.updateSellTable()
-		self.updateSearchTable()		
+			self.sellList.clear()
+			self.updateSellTable()
+			self.updateSearchTable()
+		else:
+			print("Datos No validos")
 
 
 	#INCOMPLETO# AGREGAR VENTAS POR DIA	
@@ -415,8 +432,8 @@ class Ventana_Ventas(Frame):
 		self.textLabel.grid(row=0,column=0,padx=5,pady=5)
 		self.auxWindowWidgets.append(self.textLabel)
 
-		listDate=self.info_Container.getWeekDays()
-		listDate.append("2020-08-01")
+		listDate = self.info_Container.getWeekDays(6)
+		#listDate.append("2020-08-01")
 		self.dateOptions=ttk.Combobox(self.aux_window,values=listDate)
 		self.dateOptions.grid(row=0,column=1,pady=5)
 		self.dateOptions.config(width=20)
@@ -590,21 +607,24 @@ class Ventana_Ventas(Frame):
 	#SLOTS#CHECKBOX#	
 		
 	def sellConfig(self):
+		self.typo = 1
 		self.check_var2.set(0)
 		self.check_var3.set(0)
 		print('venta: ',self.check_var1.get())
 		self.setConfig()
 
-	def	orderConfig(self):
+	def	trustConfig(self):
+		self.typo = 2
 		self.check_var1.set(0)
 		self.check_var3.set(0)
-		print('domis ',self.check_var2.get())
+		print('Fiado: ',self.check_var2.get())
 		self.setConfig()
 
-	def	trustConfig(self):
+	def	noConfig(self):
+		self.typo = 3
 		self.check_var1.set(0)
 		self.check_var2.set(0)
-		print('fiado ',self.check_var3.get())
+		print('Injustificado: ',self.check_var3.get())
 		self.setConfig()	
 
 #---------------------- FUNCIONES ASISTENTES--------------------------
@@ -673,28 +693,28 @@ class Ventana_Ventas(Frame):
 
 
 
-
-
-
-
-				#~~~~~~~~~~~~~~~~~~~~~~!!!!!CCCLLLAAASSSEEE!!!!!!~~~~~~~~~~~~~~~~~~~~~~#
+				#~~~~~~~~~~~~~~~~~~~~~~!!!!!FRAME DE ENTRADA DE CAPITAL!!!!!!~~~~~~~~~~~~~~~~~~~~~~#
+			      #~~~~~~~~~~~~~~~~~~~~~~!!!!!DISPONIBLE PARA USUARIOS!!!!!!~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~				
 #Clase encargada de mostrar la funcion de compras
-class BuyFrame(Frame):
+	#Esta clase controla toda entrada de productos
+class InFrame(Frame):
 	def __init__(self, frame,info_Container):
-		super(BuyFrame, self).__init__()		
+		super(InFrame, self).__init__()		
 		self.mainframe=frame
 		Frame.__init__(self, self.mainframe)
 		self.pack(fill='both', expand=True)
 
 		#Bandera de permisos
-		self.owner=True # True-> es propietario
-		self.username='administrador'
+		self.owner = True # True-> es propietario
+		self.username = 'administrador'
 
-		self.info_Container=info_Container
+		self.info_Container = info_Container
 
 		self.frameWidgets=[]
-		self.buyList=[]
+		self.buyList= []
+		self.buyData = []
+		self.buyCont = 0
 		self.list_new_products=[]
 		self.username='administrador'
 
@@ -764,8 +784,8 @@ class BuyFrame(Frame):
 		self.buyLabel.grid(row=1,column=0,pady=10)
 		self.frameWidgets.append(self.buyLabel)
 
-		lisProveedores=self.info_Container.getProvidersNames()
-		self.menuProveedores=ttk.Combobox(self.frame2,values=lisProveedores)
+		lisProveedores = self.info_Container.getProvidersNames()
+		self.menuProveedores = ttk.Combobox(self.frame2,values=lisProveedores)
 		self.menuProveedores.config(width=20)
 		self.menuProveedores.grid(row=1,column=1,pady=10)
 		self.frameWidgets.append(self.menuProveedores)
@@ -801,23 +821,28 @@ class BuyFrame(Frame):
 
 	def boughtDataFrame(self):
 		##################  Frame Datos de Venta  #############################
-		self.frame3=LabelFrame(self)
-		self.frame3['text']='DATOS DE COMPRA'
+		self.frame3 = LabelFrame(self)
+		self.frame3['text'] = 'DATOS DE COMPRA'
 		self.frame3.grid(row = 3, column= 0, columnspan=20,sticky=W + E,padx=10)
 
-		self.sellButton=ttk.Button(self.frame3,command=self.buyComplete)
-		self.sellButton.grid(row=2,column=0,columnspan=100,sticky=W + E,padx=10)
+		self.sellButton = ttk.Button(self.frame3,command=self.buyComplete)
+		self.sellButton.grid(row=0,column=0,columnspan=100,padx=10)
 		self.sellButton['text']='AGREGAR PEDIDO'
 		self.frameWidgets.append(self.sellButton)
+		
+		self.planButton = ttk.Button(self.frame3,command = self.planearProveedor)
+		self.planButton.grid(row=1,column=1,columnspan=100,padx=10)
+		self.planButton['text'] = 'PLANEAR PROVEEDOR'
+		self.frameWidgets.append(self.planButton)
 
 		if self.owner:
-			self.bHistory=ttk.Button(self.frame3,command=self.bHistorySlot)
-			self.bHistory.grid(row=1,column=1,padx=110,pady=10)
-			self.bHistory['text']='Historial de Compras'
+			self.bHistory = ttk.Button(self.frame3,command=self.bHistorySlot)
+			self.bHistory.grid(row=2,column=2,padx=110,pady=10)
+			self.bHistory['text'] = 'HISTORIAL DE COMPRAS'
 			self.frameWidgets.append(self.bHistory)			
 
 
-		self.totalSoldLabel=Label(self.frame3)
+		self.totalSoldLabel = Label(self.frame3)
 		self.totalSoldLabel.grid(row=0,column=0,pady=10,padx=10)
 		self.frameWidgets.append(self.totalSoldLabel)	
 
@@ -848,33 +873,49 @@ class BuyFrame(Frame):
 		self.messageLabel.grid(row=1,column=0,pady=25)
 		self.auxWindowWidgets.append(self.messageLabel)
 
+		###
 		self.priceLabel=Label(self.aux_window)
-		self.priceLabel['text']='Escriba el precio con Iva del producto: '
+		self.priceLabel['text']='PRECIO: '
 		self.priceLabel.grid(row=2,column=0,pady=25)
 		self.auxWindowWidgets.append(self.priceLabel)
-
+		
 		self.priceEntry=Entry(self.aux_window)
 		self.priceEntry.grid(row=2,column=1,pady=25)
 		self.auxWindowWidgets.append(self.priceEntry)
+		
+		self.var1 = BooleanVar()
+		self.iva = ttk.Checkbutton(self.aux_window,variable=self.var1,command=self.iva)
+		self.iva['text']='IVA INCLUIDO: '
+		self.iva.grid(row=3,column=0,pady=15)
+		self.auxWindowWidgets.append(self.iva)
 
+		
+		###
 		self.quantityLabel=Label(self.aux_window)
-		self.quantityLabel['text']='Escriba la cantidad del producto: '
-		self.quantityLabel.grid(row=3,column=0,pady=25)
+		self.quantityLabel['text']='CANTIDAD: '
+		self.quantityLabel.grid(row=4,column=0,pady=25)
 		self.auxWindowWidgets.append(self.quantityLabel)
 
 		self.quantityEntry=Entry(self.aux_window)
-		self.quantityEntry.grid(row=3,column=1,pady=25)
+		self.quantityEntry.grid(row=4,column=1,pady=25)
 		self.auxWindowWidgets.append(self.quantityEntry)
-
-		self.var=BooleanVar()
-		self.granel=ttk.Checkbutton(self.aux_window,variable=self.var,command=self.granel)
-		self.granel['text']='¿Se Vende al granel?'
-		self.granel.grid(row=4,column=0,pady=25)
-		self.auxWindowWidgets.append(self.granel)		
+		###
+		
+		self.var = BooleanVar()
+		self.granel = ttk.Checkbutton(self.aux_window,variable=self.var,command=self.granel)
+		self.granel['text']='GRANELADO: '
+		self.granel.grid(row=5,column=0,pady=25)
+		self.auxWindowWidgets.append(self.granel)
+		
+		self.var2 = BooleanVar()
+		self.cambio = ttk.Checkbutton(self.aux_window,variable=self.var2,command=self.cambio)
+		self.cambio['text']='CAMBIO: '
+		self.cambio.grid(row=6,column=0,pady=25)
+		self.auxWindowWidgets.append(self.cambio)		
 
 		self.addExisting=ttk.Button(self.aux_window,command=self.addExistingProduct)
-		self.addExisting['text']="Agregar a la canasta"
-		self.addExisting.grid(row=5,column=0)
+		self.addExisting['text']="AGREGAR"
+		self.addExisting.grid(row=7,column=0)
 		self.auxWindowWidgets.append(self.addExisting)
 
 		self.aux_window.mainloop()
@@ -944,7 +985,7 @@ class BuyFrame(Frame):
 		self.textLabel.grid(row=0,column=0,padx=5,pady=5)
 		self.auxWindowWidgets.append(self.textLabel)
 
-		listDate=self.info_Container.getWeekDays()
+		listDate = self.info_Container.getWeekDays(6)
 		self.dateOptions=ttk.Combobox(self.aux_window,values=listDate)
 		self.dateOptions.grid(row=0,column=1,pady=5)
 		self.dateOptions.config(width=20)
@@ -1016,6 +1057,12 @@ class BuyFrame(Frame):
 		self.priceLabel['text']='Escriba el precio con Iva del producto'
 		self.priceLabel.grid(row=3,column=0,pady=25)
 		self.auxWindowWidgets.append(self.priceLabel)
+		
+		self.var1 = BooleanVar()
+		self.iva = ttk.Checkbutton(self.aux_window,variable=self.var1)
+		self.iva['text']='IVA INCLUIDO: '
+		self.iva.grid(row=4,column=0,pady=10)
+		self.auxWindowWidgets.append(self.iva)
 
 		self.priceEntry=Entry(self.aux_window)
 		self.priceEntry.grid(row=3,column=1,pady=25)
@@ -1023,23 +1070,23 @@ class BuyFrame(Frame):
 
 		self.quantityLabel=Label(self.aux_window)
 		self.quantityLabel['text']='Escriba la cantidad del producto'
-		self.quantityLabel.grid(row=4,column=0,pady=25)
+		self.quantityLabel.grid(row=5,column=0,pady=25)
 		self.auxWindowWidgets.append(self.quantityLabel)
 
 		self.quantityEntry=Entry(self.aux_window)
-		self.quantityEntry.grid(row=4,column=1,pady=25)
+		self.quantityEntry.grid(row=5,column=1,pady=25)
 		self.auxWindowWidgets.append(self.quantityEntry)
 
-		self.var=BooleanVar()
-		self.granel=ttk.Checkbutton(self.aux_window,variable=self.var,command=self.granel)
+		self.var = BooleanVar()
+		self.granel = ttk.Checkbutton(self.aux_window,variable=self.var,command=self.granel)
 		self.granel['text']='¿Se Vende al granel?'
-		self.granel.grid(row=5,column=0,pady=25)
+		self.granel.grid(row=6,column=0,pady=25)
 		self.auxWindowWidgets.append(self.granel)
 		
-		self.valid=ttk.Button(self.aux_window,command=self.addNewProduct)
+		self.valid = ttk.Button(self.aux_window,command=self.addNewProduct)
 		self.valid['text']='Agregar Producto'
 		self.valid.config(width=30)
-		self.valid.grid(row=6,column=0,pady=25)		
+		self.valid.grid(row=7,column=0,pady=25)		
 		self.auxWindowWidgets.append(self.granel)
 
 		self.aux_window.mainloop()
@@ -1053,44 +1100,52 @@ class BuyFrame(Frame):
 			self.updateBuyTable()
 		except Exception as e:
 			self.message2['text']='Por favor, seleccione un producto.'
-		else:
-			pass
-		finally:
-			pass	
+
 
 	#Slot del boton Agregar pedido o comprado
 	def buyComplete(self):
 		#Se presiona el boton "Comprado"
-		provider=self.menuProveedores.get()
+		provider = self.menuProveedores.get()
 
 		if self.validarDatos([provider]):
-			self.message2['text']=''
+			self.message2['text'] = ''
 			if self.newFlag:
 				self.info_Container.newProducts(self.list_new_products)
 			
 
 			#INCOMPLETO:
 			     #FALTA GENERAR LA SUMA DE LOS NUEVOS PRODUCTOS
-			purchaseValue=self.info_Container.addBuy(self.buyList,self.list_new_products,provider,self.username)				
+			purchaseValue = self.info_Container.addBuy(self.buyList,self.list_new_products,provider,self.username)
+			self.info_Container.addIn(self.buyData,provider,self.username)
 			self.totalSoldLabel['text']='Valor nuevo Compra: {}'.format(purchaseValue)
 			self.buyList.clear()
+			self.buyData.clear()
+			self.buyCont = 0
 
 			self.updateBuyTable()
 			self.updateSearchTable()
 		else:
-			self.message2['text']='Seleccione un Proveedor.'	
+			self.message2['text']='SELECCIONE PROVEEDOR O CREE UNO NUEVO.'
+			
+	def planearProveedor(self):
+		self.info_Container.addIn(self.buyData,"Cualquiera",self.username)
 
 
 #SLOTS DE BOTONES DEL VENTANAS SECUNDARIAS
 	def addNewProduct(self):
-		listData=[]
+		listData = []
 		listData.append(self.codeEntry.get())#[0] Codigo
 		listData.append(self.nameEntry.get())#[1] Descripcion
-		listData.append(self.priceEntry.get())#[2] Precio
-		listData.append(self.quantityEntry.get())#[3] Cantidad
-		listData.append(self.var.get())#[4]	Granel
+		listData.append(False) #[2] Cambio/Compra - True/False
+		listData.append(self.var.get())#[3]	Granel
+		listData.append(float(self.quantityEntry.get()))#[4] Cantidad
+		listData.append(self.var.get())#[5]	Con o sin IVA
+		listData.append(int(self.priceEntry.get()))#[6] Precio
+		
+
+		listData.append(self.var1.get())#[5]	IVA
 		if self.validarDatos(listData):
-			self.message2['text']=''					
+			self.message2['text']= ''
 			self.setNewProduct(listData)			
 			#self.deleteWidgets(self.auxWindowWidgets)
 			self.aux_window.destroy()
@@ -1099,23 +1154,40 @@ class BuyFrame(Frame):
 
 
 	def addExistingProduct(self):
-		newQuantity=self.quantityEntry.get()
-		newPrice=self.priceEntry.get()
-		chosen=self.searchTable.selection()
-		flag=self.validarDatos([chosen])
+		auxList = []
+		dataList = []
+		newQuantity = self.quantityEntry.get()
+		newPrice = self.priceEntry.get()
+		chosen = self.searchTable.selection()
+		flag = self.validarDatos([chosen])
 		if not flag:
-				self.messageLabel['text']='Por favor, seleccione un Proveedor.'
+				self.messageLabel['text'] = 'Por favor, seleccione un Proveedor.'
 		else:		
 			if self.validarDatos([newQuantity,newPrice]):
+				
 				self.deleteWidgets(self.auxWindowWidgets)
 				self.aux_window.destroy()
-				chosen=self.searchTable.item(chosen)	
-				chosen['values'][1]=int(newPrice)
-				chosen['values'][2]=int(newQuantity)
+				
+				chosen = self.searchTable.item(chosen)	
+				
+				dataList.append(chosen['text']) #Codigo
+				dataList.append(chosen['values'][0])#Decripcion
+				dataList.append(self.var2.get())#Cambio/Compra
+				dataList.append(self.var.get())#Granel			
+				dataList.append(float(newQuantity))#Cantidad
+				dataList.append(self.var1.get())#Con o sin Iva
+				dataList.append(int(newPrice)) #Precio
+				
+				chosen['values'][1] = int(newPrice)
+				chosen['values'][2] = float(newQuantity)
+
 				self.buyList.append(chosen)
+				self.buyData.append(dataList)
+				self.buyCont += 1
+				
 				try:				
 					self.updateBuyTable()
-					self.message['text']=''
+					self.message['text'] = ''
 				except Exception as e:
 					self.messageLabel['text']='Por favor, seleccione un producto.'
 			else:
@@ -1161,10 +1233,28 @@ class BuyFrame(Frame):
 		self.var.set(not self.var.get())		
 		if self.var.get():
 			print("Se vende al granel")
+		else:
+			print("NO se vende al granel")	
+			
+	def iva(self):
+		self.var1.set(not self.var1.get())		
+		if self.var1.get():
+			print("Precio con IVA")
+		else:
+			print("Precio sin IVA")	
+			
+	def cambio(self):
+		self.var2.set(not self.var2.get())		
+		if self.var2.get():
+			print("CAMBIO")				
+		else:
+			print("COMPRA")	
+				
+				
 
 
 	def updateSearchTable(self):
-		records=self.searchTable.get_children()
+		records = self.searchTable.get_children()
 		for i in records:
 				self.searchTable.delete(i)
 		for elem in self.info_Container.getProducts():
@@ -1185,7 +1275,8 @@ class BuyFrame(Frame):
 	def setNewProduct(self,listData):
 		#Agregar nuevos productos a la lista de productos
 		self.list_new_products.append(listData)
-		self.buyTable.insert("",10,text = listData[0],values=(listData[1],listData[2],listData[3]))
+		self.buyData.append(listData)
+		self.buyTable.insert("",10,text = listData[0],values=(listData[1],listData[2],listData[3]))		
 
 
 	def validarDatos(self,listData):
@@ -1225,7 +1316,8 @@ class BuyFrame(Frame):
 #~~~~~~~~~~~~~~~~~~~~~~----------------FIN DE LA CLASE VENTANA_COMPRAS ---------------------------------·~#	
 
 
-				#~~~~~~~~~~~~~~~~~~~~~~!!!!!CCCLLLAAASSSEEE!!!!!!~~~~~~~~~~~~~~~~~~~~~~#
+				#~~~~~~~~~~~~~~~~~~~~~~!!!!!FRAME CUADRE DIARIO!!!!!!~~~~~~~~~~~~~~~~~~~~~~#
+			 #~~~~~~~~~~~~~~~~~~~~~~!!!!!DISPONIBLE PARA USUARIOS!!!!!!~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~				
 #Clase encargada de registrar el cuadre diario
 class cashRegister(Frame):
@@ -1246,7 +1338,7 @@ class cashRegister(Frame):
 		self.registerFrame()
 
 	def infoFrame(self):
-		##################  Frame de busqueda de productos  #######################
+		##################  FRAME CUADRE DIARIO  #######################
 
 		#PENDIENTE:
 		self.infoList=[30,46,76,23,33]
@@ -1431,21 +1523,24 @@ class cashRegister(Frame):
 	#SLOTS#Slot de button 'HECHO'
 	def doneSlot(self):
 		if self.info_Container.getToday()==self.date:
-			try:											
-				data=[]
-				data.append(int(self.bill100Entry.get())*100000)
-				data.append(int(self.bill50Entry.get())*50000)
-				data.append(int(self.bill20Entry.get())*20000)
-				data.append(int(self.bill10Entry.get())*10000)
-				data.append(int(self.bill5Entry.get())*5000)
-				data.append(int(self.bill2Entry.get())*2000)
-				data.append(int(self.bill1Entry.get())*1000)
-				data.append(int(self.mon5Entry.get())*500)
-				data.append(int(self.mon2Entry.get())*200)
-				data.append(int(self.mon1Entry.get())*100)
-				data.append(int(self.mon50Entry.get())*50)
-				self.registerLabel['text']='Datos VALIDOS'
-
+			try:
+				if not self.info_Container.getCashState():																
+					data=[]				
+					data.append(int(self.bill100Entry.get())*100000)
+					data.append(int(self.bill50Entry.get())*50000)
+					data.append(int(self.bill20Entry.get())*20000)
+					data.append(int(self.bill10Entry.get())*10000)
+					data.append(int(self.bill5Entry.get())*5000)
+					data.append(int(self.bill2Entry.get())*2000)
+					data.append(int(self.bill1Entry.get())*1000)
+					data.append(int(self.mon5Entry.get())*500)
+					data.append(int(self.mon2Entry.get())*200)
+					data.append(int(self.mon1Entry.get())*100)
+					data.append(int(self.mon50Entry.get())*50)
+					self.registerLabel['text']='Datos VALIDOS'
+					self.info_Container.closeCash()
+				else:					
+					self.registerLabel['text']='LA CAJA YA HA SIDO CERRADA'
 			except Exception as e:
 				self.registerLabel['text']='Datos NO VALIDOS'
 
@@ -1473,7 +1568,8 @@ class cashRegister(Frame):
 #~~~~~~~~~~~~~~~~~~~~~~----------------FIN DE LA CLASE VENTANA_COMPRAS ---------------------------------·~#	
 
 
-				#~~~~~~~~~~~~~~~~~~~~~~!!!!!CCCLLLAAASSSEEE!!!!!!~~~~~~~~~~~~~~~~~~~~~~#
+				#~~~~~~~~~~~~~~~~~~~~~~!!!!!FRAME DE RECORDATORIOS!!!!!!~~~~~~~~~~~~~~~~~~~~~~#
+			   #~~~~~~~~~~~~~~~~~~~~~~!!!!!DISPONIBLE PARA USUARIOS!!!!!!~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~				
 #Clase encargada de mostrar la funcion de notificaciones
 
@@ -1795,7 +1891,8 @@ class Notify(Frame):
 #~~~~~~~~~~~~~~~~~~~~~~----------------FIN DE LA CLASE VENTANA_COMPRAS ---------------------------------·~#	
 
 
-				#~~~~~~~~~~~~~~~~~~~~~~!!!!!CCCLLLAAASSSEEE!!!!!!~~~~~~~~~~~~~~~~~~~~~~#
+				#~~~~~~~~~~~~~~~~~~~~~~!!!!!FRAME DE MUESTRA DE DATOS!!!!!!~~~~~~~~~~~~~~~~~~~~~~#
+			#~~~~~~~~~~~~~~~~~~~~~~!!!!!DISPONIBLE SOLO PARA ADMINISTRADORES!!!!!!~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~				
 #Clase encargada de mostrar la funcion de balance de datos
 

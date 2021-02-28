@@ -1,0 +1,8 @@
+26/02 - Registrar entrada de productos en nuevos archivos
+26/02 - Registrar salida de productos en nuevos archivos
+27/02 - Registrar cuadre diario y todo lo relacionado con la administracion
+27/02 - Registrar pedidos y mostrar pendientes
+28/02 - Registrar Domicilios con recordatorio
+28/02 - Registrar Pendientes y mostrar recordatorios
+01/03 - Registar Inventario de productos para el inicio de la App
+28/02 - Sugerir pedidos de acuerdo a la cantidad de productos
