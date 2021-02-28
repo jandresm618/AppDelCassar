@@ -394,27 +394,16 @@ class OutFrame(Frame):
 	#Slot del boton Vendido
 	def saleComplete(self):
 		#Se presiona el boton "VENDIDO"
-		shape = self.menuPay.get()
-		if not shape == '':
-			saleValue = self.info_Container.addOut(self.sellList,self.typo,shape,self.username,self.username)  #Funcion Simplificada de Venta
-			
-			if self.check_var1.get() == 1:
-				saleValue = self.info_Container.addSale(self.sellList,self.username,self.username)
-				self.totalSoldLabel['text'] = 'Valor nuevo Venta: {}'.format(saleValue)
-
-			elif self.check_var2.get() == 1:
-				saleValue=self.info_Container.addDelivery(self.sellList,['Calle 40','Javier Mosco','3108207116'],self.username)
-				self.totalSoldLabel['text']='Valor nuevo Venta: {}'.format(saleValue)
-
-			elif self.check_var3.get() == 1:
-				saleValue=self.info_Container.addTrusted(self.sellList,'Marta',self.username)
-				self.totalSoldLabel['text']='Valor nuevo Venta: {}'.format(saleValue)
-
-			self.sellList.clear()
-			self.updateSellTable()
-			self.updateSearchTable()
-		else:
-			print("Datos No validos")
+		if self.sellList:			
+			shape = self.menuPay.get()
+			if not shape == '':
+				saleValue = self.info_Container.addOut(self.sellList,self.typo,shape,self.username,self.username)  #Funcion Simplificada de Venta
+				
+				self.sellList.clear()
+				self.updateSellTable()
+				self.updateSearchTable()
+			else:
+				print("Datos No validos")		
 
 
 	#INCOMPLETO# AGREGAR VENTAS POR DIA	
@@ -860,65 +849,68 @@ class InFrame(Frame):
 		for elem in self.results:
 			self.searchTable.insert("",0,text = elem.Codigo(),values=(elem.Nombre(),elem.Precio(),elem.Cantidad()))
 
-	def addBuyProduct(self):		
-		self.aux_window=Tk()
-		self.aux_window.protocol("WM_DELETE_WINDOW",self.closedWindow)
+	def addBuyProduct(self):
+		chosen = self.searchTable.selection()
+		if chosen:
+			print("Datos Validos ",chosen,type(chosen))
+			self.aux_window = Tk()
+			self.aux_window.protocol("WM_DELETE_WINDOW",self.closedWindow)
 
-		
-		self.newFlag=False
-		self.auxWindowWidgets=[]
+			
+			self.newFlag=False
+			self.auxWindowWidgets=[]
 
-		self.messageLabel=Label(self.aux_window)
-		self.messageLabel['text']=''
-		self.messageLabel.grid(row=1,column=0,pady=25)
-		self.auxWindowWidgets.append(self.messageLabel)
+			self.messageLabel=Label(self.aux_window)
+			self.messageLabel['text']=''
+			self.messageLabel.grid(row=1,column=0,pady=25)
+			self.auxWindowWidgets.append(self.messageLabel)
 
-		###
-		self.priceLabel=Label(self.aux_window)
-		self.priceLabel['text']='PRECIO: '
-		self.priceLabel.grid(row=2,column=0,pady=25)
-		self.auxWindowWidgets.append(self.priceLabel)
-		
-		self.priceEntry=Entry(self.aux_window)
-		self.priceEntry.grid(row=2,column=1,pady=25)
-		self.auxWindowWidgets.append(self.priceEntry)
-		
-		self.var1 = BooleanVar()
-		self.iva = ttk.Checkbutton(self.aux_window,variable=self.var1,command=self.iva)
-		self.iva['text']='IVA INCLUIDO: '
-		self.iva.grid(row=3,column=0,pady=15)
-		self.auxWindowWidgets.append(self.iva)
+			###
+			self.priceLabel=Label(self.aux_window)
+			self.priceLabel['text']='PRECIO: '
+			self.priceLabel.grid(row=2,column=0,pady=25)
+			self.auxWindowWidgets.append(self.priceLabel)
+			
+			self.priceEntry=Entry(self.aux_window)
+			self.priceEntry.grid(row=2,column=1,pady=25)
+			self.auxWindowWidgets.append(self.priceEntry)
+			
+			self.var1 = BooleanVar()
+			self.iva = ttk.Checkbutton(self.aux_window,variable=self.var1,command=self.iva)
+			self.iva['text']='IVA INCLUIDO: '
+			self.iva.grid(row=3,column=0,pady=15)
+			self.auxWindowWidgets.append(self.iva)
 
-		
-		###
-		self.quantityLabel=Label(self.aux_window)
-		self.quantityLabel['text']='CANTIDAD: '
-		self.quantityLabel.grid(row=4,column=0,pady=25)
-		self.auxWindowWidgets.append(self.quantityLabel)
+			
+			###
+			self.quantityLabel=Label(self.aux_window)
+			self.quantityLabel['text']='CANTIDAD: '
+			self.quantityLabel.grid(row=4,column=0,pady=25)
+			self.auxWindowWidgets.append(self.quantityLabel)
 
-		self.quantityEntry=Entry(self.aux_window)
-		self.quantityEntry.grid(row=4,column=1,pady=25)
-		self.auxWindowWidgets.append(self.quantityEntry)
-		###
-		
-		self.var = BooleanVar()
-		self.granel = ttk.Checkbutton(self.aux_window,variable=self.var,command=self.granel)
-		self.granel['text']='GRANELADO: '
-		self.granel.grid(row=5,column=0,pady=25)
-		self.auxWindowWidgets.append(self.granel)
-		
-		self.var2 = BooleanVar()
-		self.cambio = ttk.Checkbutton(self.aux_window,variable=self.var2,command=self.cambio)
-		self.cambio['text']='CAMBIO: '
-		self.cambio.grid(row=6,column=0,pady=25)
-		self.auxWindowWidgets.append(self.cambio)		
+			self.quantityEntry=Entry(self.aux_window)
+			self.quantityEntry.grid(row=4,column=1,pady=25)
+			self.auxWindowWidgets.append(self.quantityEntry)
+			###
+			
+			self.var = BooleanVar()
+			self.granel = ttk.Checkbutton(self.aux_window,variable=self.var,command=self.granel)
+			self.granel['text']='GRANELADO: '
+			self.granel.grid(row=5,column=0,pady=25)
+			self.auxWindowWidgets.append(self.granel)
+			
+			self.var2 = BooleanVar()
+			self.cambio = ttk.Checkbutton(self.aux_window,variable=self.var2,command=self.cambio)
+			self.cambio['text']='CAMBIO: '
+			self.cambio.grid(row=6,column=0,pady=25)
+			self.auxWindowWidgets.append(self.cambio)		
 
-		self.addExisting=ttk.Button(self.aux_window,command=self.addExistingProduct)
-		self.addExisting['text']="AGREGAR"
-		self.addExisting.grid(row=7,column=0)
-		self.auxWindowWidgets.append(self.addExisting)
+			self.addExisting=ttk.Button(self.aux_window,command=self.addExistingProduct)
+			self.addExisting['text']="AGREGAR"
+			self.addExisting.grid(row=7,column=0)
+			self.auxWindowWidgets.append(self.addExisting)
 
-		self.aux_window.mainloop()
+			self.aux_window.mainloop()
 		
 		
 
@@ -1030,36 +1022,36 @@ class InFrame(Frame):
 
 		self.auxWindowWidgets=[]
 
-		self.messageLabel=Label(self.aux_window)
+		self.messageLabel = Label(self.aux_window)
 		self.messageLabel['text']='Por favor, llene cada item'
 		self.messageLabel.grid(row=0,column=0)
 		self.auxWindowWidgets.append(self.messageLabel)
 
-		self.codeLabel=Label(self.aux_window)
+		self.codeLabel = Label(self.aux_window)
 		self.codeLabel['text']='Escriba el Codigo del producto'
 		self.codeLabel.grid(row=1,column=0)
 		self.auxWindowWidgets.append(self.codeLabel)
 
-		self.codeEntry=Entry(self.aux_window)
+		self.codeEntry = Entry(self.aux_window)
 		self.codeEntry.grid(row=1,column=1,pady=25)
 		self.auxWindowWidgets.append(self.codeEntry)
 
-		self.nameLabel=Label(self.aux_window)
+		self.nameLabel = Label(self.aux_window)
 		self.nameLabel['text']='Escriba la Descripcion del producto'
 		self.nameLabel.grid(row=2,column=0,pady=25)
 		self.auxWindowWidgets.append(self.nameLabel)
 
-		self.nameEntry=Entry(self.aux_window)
+		self.nameEntry = Entry(self.aux_window)
 		self.nameEntry.grid(row=2,column=1,pady=25)		
 		self.auxWindowWidgets.append(self.nameEntry)
 
-		self.priceLabel=Label(self.aux_window)
+		self.priceLabel = Label(self.aux_window)
 		self.priceLabel['text']='Escriba el precio con Iva del producto'
 		self.priceLabel.grid(row=3,column=0,pady=25)
 		self.auxWindowWidgets.append(self.priceLabel)
 		
 		self.var1 = BooleanVar()
-		self.iva = ttk.Checkbutton(self.aux_window,variable=self.var1)
+		self.iva = ttk.Checkbutton(self.aux_window,variable=self.var1,command=self.iva)
 		self.iva['text']='IVA INCLUIDO: '
 		self.iva.grid(row=4,column=0,pady=10)
 		self.auxWindowWidgets.append(self.iva)
@@ -1105,27 +1097,28 @@ class InFrame(Frame):
 	#Slot del boton Agregar pedido o comprado
 	def buyComplete(self):
 		#Se presiona el boton "Comprado"
-		provider = self.menuProveedores.get()
+		if self.buyData:		
+			provider = self.menuProveedores.get()
 
-		if self.validarDatos([provider]):
-			self.message2['text'] = ''
-			if self.newFlag:
-				self.info_Container.newProducts(self.list_new_products)
-			
+			if self.validarDatos([provider]):
+				self.message2['text'] = ''
+				if self.newFlag:
+					self.info_Container.newProducts(self.list_new_products)
+				
 
-			#INCOMPLETO:
-			     #FALTA GENERAR LA SUMA DE LOS NUEVOS PRODUCTOS
-			purchaseValue = self.info_Container.addBuy(self.buyList,self.list_new_products,provider,self.username)
-			self.info_Container.addIn(self.buyData,provider,self.username)
-			self.totalSoldLabel['text']='Valor nuevo Compra: {}'.format(purchaseValue)
-			self.buyList.clear()
-			self.buyData.clear()
-			self.buyCont = 0
+				#INCOMPLETO:
+				     #FALTA GENERAR LA SUMA DE LOS NUEVOS PRODUCTOS
+				purchaseValue = self.info_Container.addBuy(self.buyList,self.list_new_products,provider,self.username)
+				self.info_Container.addIn(self.buyData,provider,self.username)
+				self.totalSoldLabel['text']='Valor nuevo Compra: {}'.format(purchaseValue)
+				self.buyList.clear()
+				self.buyData.clear()
+				self.buyCont = 0
 
-			self.updateBuyTable()
-			self.updateSearchTable()
-		else:
-			self.message2['text']='SELECCIONE PROVEEDOR O CREE UNO NUEVO.'
+				self.updateBuyTable(self.buyData)
+				self.updateSearchTable()
+			else:
+				self.message2['text']='SELECCIONE PROVEEDOR O CREE UNO NUEVO.'
 			
 	def planearProveedor(self):
 		self.info_Container.addIn(self.buyData,"Cualquiera",self.username)
@@ -1139,11 +1132,12 @@ class InFrame(Frame):
 		listData.append(False) #[2] Cambio/Compra - True/False
 		listData.append(self.var.get())#[3]	Granel
 		listData.append(float(self.quantityEntry.get()))#[4] Cantidad
-		listData.append(self.var.get())#[5]	Con o sin IVA
-		listData.append(int(self.priceEntry.get()))#[6] Precio
-		
+		listData.append(self.var1.get())#[5]	Con o sin IVA
+		if self.var1.get():			
+			listData.append(int(self.priceEntry.get()))#[6] Precio
+		else:
+			listData.append(int(self.priceEntry.get())*self.info_Container.getIva())#[6] Precio	
 
-		listData.append(self.var1.get())#[5]	IVA
 		if self.validarDatos(listData):
 			self.message2['text']= ''
 			self.setNewProduct(listData)			
@@ -1186,7 +1180,7 @@ class InFrame(Frame):
 				self.buyCont += 1
 				
 				try:				
-					self.updateBuyTable()
+					self.updateBuyTable(self.buyData)
 					self.message['text'] = ''
 				except Exception as e:
 					self.messageLabel['text']='Por favor, seleccione un producto.'
@@ -1264,19 +1258,25 @@ class InFrame(Frame):
 	def updateBuyTable(self):
 		#saleValue=self.info_Container.addingBuy(self.buyList)
 		#self.totalBoughtLabel['text']='Valor nuevo Venta: {}'.format(saleValue)						
-		records=self.buyTable.get_children()
+		records = self.buyTable.get_children()
 		for i in records:
 				self.buyTable.delete(i)
 		for elem in self.buyList:
 			self.buyTable.insert("",0,text = elem['text'],values=elem['values'])
 
+	def updateBuyTable(self,buyList):
+		records = self.buyTable.get_children()
+		for i in records:
+				self.buyTable.delete(i)
+		for elem in buyList:
+			self.buyTable.insert("",0,text = elem[0],values= [elem[1],elem[6],elem[4]])		
 
 	#!!!!!!!!!!!!!!IMCOPLETO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	def setNewProduct(self,listData):
 		#Agregar nuevos productos a la lista de productos
 		self.list_new_products.append(listData)
 		self.buyData.append(listData)
-		self.buyTable.insert("",10,text = listData[0],values=(listData[1],listData[2],listData[3]))		
+		self.buyTable.insert("",10,text = listData[0],values=(listData[1],listData[6],listData[4]))		
 
 
 	def validarDatos(self,listData):

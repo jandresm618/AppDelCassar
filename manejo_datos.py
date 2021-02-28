@@ -41,6 +41,8 @@ class InfoContainer(object):
 		self.total_QR = 0
 		self.total_bought = 0
 		self.total_cashOut = 0
+
+		self.iva = 1.19
 		
 		self.data_list=[]
 		self.search_list=[]
@@ -71,6 +73,8 @@ class InfoContainer(object):
 		self.cash_closed = True
 
 	#METODOS GET#
+	def getIva(self):
+		return self.iva
 	def getCashState(self):
 		return self.cash_closed	
 	def getDfInventario(self):
@@ -158,7 +162,6 @@ class InfoContainer(object):
 		for i in self.provider_list:
 			self.dfProveedores.loc[cont] = i.atributes()
 			cont=cont+1			
-
 
 	#METODOS DE CARGA#
 	def dataUpload(self):
@@ -328,8 +331,11 @@ class InfoContainer(object):
 			compra = product[2]
 			granel = product[3]
 			iva = product[5]
+
+			self.addRow(self.dfIn,aux)
 			
 			cont += 1
+		print(self.dfIn)	
 
 	def addBuy(self,bought_Product,listNewProducts,provider,username):	
 		cont = 0
