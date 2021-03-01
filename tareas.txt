@@ -1,4 +1,4 @@
-26/02 - Registrar entrada de productos en nuevos archivos
+26/02 - Registrar entrada de productos en nuevos archivos                    
 26/02 - Registrar salida de productos en nuevos archivos
 27/02 - Registrar cuadre diario y todo lo relacionado con la administracion
 27/02 - Registrar pedidos y mostrar pendientes
@@ -6,3 +6,18 @@
 28/02 - Registrar Pendientes y mostrar recordatorios
 01/03 - Registar Inventario de productos para el inicio de la App
 28/02 - Sugerir pedidos de acuerdo a la cantidad de productos
+
+01/03 - Resolver conflicto entre agregar un producto nuevo y ajustar el inventario
+01/03 - Resolver conflictos con datos fijos como la cantidad que se debe mantener por producto
+01/03 - Definir el ajuste de inventario
+01/03 - Registrar cuadre diario y todo lo relacionado con la administracion
+27/02 - Registrar pedidos y mostrar pendientes
+28/02 - Registrar Domicilios con recordatorio
+28/02 - Sugerir pedidos de acuerdo a la cantidad de productos
+01/03 - Planear el registro de fiados y salidas injustificadas para el analisis estadistico
+01/03 - Planear el pago de deudas de los fiadores
+01/03 - Hacer Cronograma para cada tarea para finalizar en un mes la version 1
+01/03 - Definir como debe ser la version 1
+
+
+

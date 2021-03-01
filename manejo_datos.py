@@ -31,7 +31,7 @@ def overShape(string1,string2):
 	return strF					
 
 
-#CLASE InfoContainer: Esta clase se encarga de modelar el InfoContainer del negocio
+#CLASE InfoContainer: Esta clase se encarga de modelar el manejo de Informacion del negocio
 class InfoContainer(object):
 
 	def __init__(self):
@@ -93,6 +93,7 @@ class InfoContainer(object):
 			providersNames.append(i.getNombre())
 		return providersNames	
 
+	#METODOS DE MANEJO DEL TIEMPO	
 	def getToday(self):
 		return date.today()
 	def getTomorrow(self):
@@ -101,15 +102,13 @@ class InfoContainer(object):
 		return date.today()	+ timedelta(days=-1)	
 	def getNow(self):
 		return	datetime.now()
-	def getWeekDays(self,limit):
+	def getWeekDays(self,limit):		
 		days=[]
 		for i in range(limit):
 			days.append(date.today()	+ timedelta(days=-i))
 		return days					
 
-
-	#METODOS DE CONVERSION DE DATOS#
-		"""RETORNA MATRIZ DE DATAFRAME"""
+	#METODOS DE MANIPULACION DE DATAFRAMES
 	def df2List(self,dataframe):
 		listReturn=[]
 		listAux=[]
@@ -202,7 +201,6 @@ class InfoContainer(object):
 
 		self.dfVentas.to_excel(grabar,'Hoja 2')
 		grabar.save()
-	
 	#Metodo Generalizado para Guardar
 	def guardarExcel(self,name,dataFrame,sheet):
 		guardar = pd.ExcelWriter(name)
@@ -217,9 +215,9 @@ class InfoContainer(object):
 			print("NO SE HA GUARDADO EL ARCHIVO CSV.\n",e)
 			return False
 
-	#METODOS DE MODIFICACION# 
-	#"""SE MODIFICAN LOS DATOS DE LOS DATAFRAME VENTAS"""
-	#		"""AÑADIR COLUMNA AL DATAFRAME"""
+	#METODOS DE DINAMICOS DE INFORMACION
+		#"""SE MODIFICAN LOS DATOS DE LOS DATAFRAME VENTAS"""
+			#		"""AÑADIR COLUMNA AL DATAFRAME"""
 	def addRow(self,dataFrame,listData):
 		try:
 			print(len(listData))
@@ -365,7 +363,8 @@ class InfoContainer(object):
 		except Exception as e:
 			print("!!!!!!!!!!!!!!!!!!No se pudo completar la compra!!!!!!!!!!")
 			return 0
-	#METODOS DE BUSQUEDA# SE BUSCA DATOS EN LOS DATAFRAMES
+			
+		#METODOS DE BUSQUEDA# SE BUSCA DATOS EN LOS DATAFRAMES
 	def searchProductByCode(self,code):
 		return self.searchDataFrame(self.dfInventario,'CODIGO',code)
 	def searchProductByName(self,name):
@@ -373,14 +372,11 @@ class InfoContainer(object):
 	def searchProductByPrice(self,price):
 		return self.searchDataFrame(self.dfInventario,'PRECIO',price)
 	def searchProductByProvider(self,provider):
-		return self.searchDataFrame(self.dfInventario,'PROVEEDOR',provider)
-					
+		return self.searchDataFrame(self.dfInventario,'PROVEEDOR',provider)				
 	def searchSaleByDate(self,date):
 		return self.searchDataFrame(self.dfVentas,'ID VENTA',date)
-
 	def searchDeliveryByDate(self,date):
-		self.searchDataFrame(self.dfVentas,'ID VENTA',date)
-	
+		self.searchDataFrame(self.dfVentas,'ID VENTA',date)	
 	def searchTrustByDate(self,date):
 		self.searchDataFrame(self.dfVentas,'ID VENTA',date)
 	def searchTrustByState(self,state):
@@ -397,7 +393,7 @@ class InfoContainer(object):
 			print("No se puede ejecutar esta forma de eliminar")
 		
 				
-	"""METODO DE BUSQUEDA EN DATAFRAME"""
+	#METODO DE BUSQUEDA EN DATAFRAME
 	def searchDataFrame(self,dataframe,column,data):
 		listThings=[]
 		cont=0
@@ -564,9 +560,6 @@ class InfoContainer(object):
 			print(strAux)		
 
 	#METODOS INDEFINIDOS#
-
-
-
 	def setParametro(self, indice ,parametro, valor):			
 		for i in self.data_list:
 			if i.Indice() == indice:
@@ -588,7 +581,7 @@ class InfoContainer(object):
 				elif(parametro=='5'):
 					#set de cantidad
 					i.setCantidad(valor)
-					
+
 	def setParametroGranel(self, indice):
 		for i in self.data_list:
 			if i.Indice() == indice:
@@ -623,7 +616,6 @@ class InfoContainer(object):
 
 			print(i.Codigo()," - ",i.Nombre()," - ",i.Precio()," - ",i.Cantidad_O()," - ",i.Cantidad()," Granel: ",i.Granel())
 
-
 	def printListaProductos(self):
 		for i in self.data_list:
 			print(i.Codigo(),i.Nombre(),i.Precio(),i.Cantidad_O(),i.Indice())
@@ -636,7 +628,7 @@ class InfoContainer(object):
 				print("El producto escogido es: ")
 				print(i.Codigo()," - ",i.Nombre()," - ",i.Precio()," - ",i.Cantidad_O()," - ",i.Indice())			
 	
-#CLASE PROVEEDOR: Esta clase se encarga de modelar un producto en especifico
+#CLASE PROVEEDOR: Esta clase se encarga de modelar un proveedor en especifico
 class Proveedor(object):
 	"""docstring for Proveedores"""
 	def __init__(self, value_list):

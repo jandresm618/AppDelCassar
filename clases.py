@@ -710,7 +710,6 @@ class InFrame(Frame):
 		self.searchFrame()
 		self.buyTableFrame()
 		self.boughtDataFrame()
-
 	def searchFrame(self):
 		##################  Frame de busqueda de productos  #######################
 		self.frame=LabelFrame(self)
@@ -761,7 +760,6 @@ class InFrame(Frame):
 		self.addNewButton['text']='Añadir Producto Nuevo'
 		self.addNewButton.grid(row=7,column=3,pady=5,padx=5)
 		self.frameWidgets.append(self.addNewButton)
-
 	def buyTableFrame(self):	
 		##################  Frame Carrito de Compras  #############################
 		self.frame2=LabelFrame(self)
@@ -806,7 +804,6 @@ class InFrame(Frame):
 		self.deleteButton['text']='Eliminar del Carrito'
 		self.deleteButton.grid(row=4,column=0,sticky=W + E,columnspan=2,pady=10)
 		self.frameWidgets.append(self.deleteButton)	
-	
 
 	def boughtDataFrame(self):
 		##################  Frame Datos de Venta  #############################
@@ -835,7 +832,6 @@ class InFrame(Frame):
 		self.totalSoldLabel.grid(row=0,column=0,pady=10,padx=10)
 		self.frameWidgets.append(self.totalSoldLabel)	
 
-
 #SLOTS DE BOTONES DEL FRAME PRINCIPAL
 	def searchProduct(self):
 		self.results=self.info_Container.searchData(self.searchName.get())	
@@ -859,7 +855,7 @@ class InFrame(Frame):
 			self.newFlag=False
 			self.auxWindowWidgets=[]
 
-			self.messageLabel=Label(self.aux_window)
+			self.messageLabel = Label(self.aux_window)
 			self.messageLabel['text']=''
 			self.messageLabel.grid(row=1,column=0,pady=25)
 			self.auxWindowWidgets.append(self.messageLabel)
@@ -910,8 +906,8 @@ class InFrame(Frame):
 			self.auxWindowWidgets.append(self.addExisting)
 
 			self.aux_window.mainloop()
-		
-		
+		else:
+			pass
 
 	def addNewProvider(self):
 		self.aux_window=Tk()
@@ -1149,45 +1145,44 @@ class InFrame(Frame):
 	def addExistingProduct(self):
 		auxList = []
 		dataList = []
+		newQuantity = 0
+		newPrice = 0
 		newQuantity = self.quantityEntry.get()
-		if self.var1.get():			
+		if self.var1.get():
 			newPrice = int(self.priceEntry.get())#[5] Precio
 		else:
-			newprice = int(self.priceEntry.get())*self.info_Container.getIva()#[5] Precio
+			newPrice = int(self.priceEntry.get())*self.info_Container.getIva()#[5] Precio
 		
 		chosen = self.searchTable.selection()
-		flag = self.validarDatos([chosen])
-		if not flag:
-				self.messageLabel['text'] = 'Por favor, seleccione un Proveedor.'
-		else:		
-			if self.validarDatos([newQuantity,newPrice]):
-				
-				self.deleteWidgets(self.auxWindowWidgets)
-				self.aux_window.destroy()
-				
-				chosen = self.searchTable.item(chosen)	
-				
-				dataList.append(chosen['text']) #Codigo
-				dataList.append(chosen['values'][0])#Decripcion
-				dataList.append(self.var2.get())#Cambio/Compra
-				dataList.append(self.var.get())#Granel			
-				dataList.append(float(newQuantity))#Cantidad
-				dataList.append(int(newPrice)) #Precio
-				
-				chosen['values'][1] = int(newPrice)
-				chosen['values'][2] = float(newQuantity)
+		print("NUEVA CANTIDAD {}\nNUEVO PRECIO {}\n".format(newQuantity,newPrice))
+		if self.validarDatos([newQuantity,newPrice]):
+			
+			self.deleteWidgets(self.auxWindowWidgets)
+			self.aux_window.destroy()
 
-				self.buyList.append(chosen)
-				self.buyData.append(dataList)
-				self.buyCont += 1
+			chosen = self.searchTable.item(chosen)	
+			
+			dataList.append(chosen['text']) #Codigo
+			dataList.append(chosen['values'][0])#Decripcion
+			dataList.append(self.var2.get())#Cambio/Compra
+			dataList.append(self.var.get())#Granel			
+			dataList.append(float(newQuantity))#Cantidad
+			dataList.append(int(newPrice)) #Precio
+			
+			chosen['values'][1] = int(newPrice)
+			chosen['values'][2] = float(newQuantity)
+
+			self.buyList.append(chosen)
+			self.buyData.append(dataList)
+			self.buyCont += 1
 				
-				try:				
-					self.updateBuyTable(self.buyData)
-					self.message['text'] = ''
-				except Exception as e:
-					self.messageLabel['text']='Por favor, seleccione un producto.'
-			else:
-				self.messageLabel['text']='DATOS NO VALIDOS'
+			try:				
+				self.updateBuyTable(self.buyData)
+				self.message['text'] = ''
+			except Exception as e:
+				print("ERROR al actualizar la tabla del carrito de compras \n",e)
+		else:
+			self.messageLabel['text']='Por favor, seleccione un producto.'
 
 	def addNewProvider2Info(self):
 		listData=[]
@@ -1245,9 +1240,6 @@ class InFrame(Frame):
 			print("CAMBIO")				
 		else:
 			print("COMPRA")	
-				
-				
-
 
 	def updateSearchTable(self):
 		records = self.searchTable.get_children()
