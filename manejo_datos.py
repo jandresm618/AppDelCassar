@@ -222,6 +222,7 @@ class InfoContainer(object):
 	#		"""AÑADIR COLUMNA AL DATAFRAME"""
 	def addRow(self,dataFrame,listData):
 		try:
+			print(len(listData))
 			index = len(dataFrame.index)
 			dataFrame.loc[index] = listData
 		except Exception as e:
@@ -246,6 +247,8 @@ class InfoContainer(object):
 		try:
 			for product in products:
 				if self.validarDatos(product):
+					#index=self.selectProducto([product['text'],product['values'][0]])
+					#if self.data_list[index].setOut(1):
 					#Tabulacion de Datos
 					aux = self.tabOutData(product,typo,shape,buyername,username)
 					price = int(product['values'][1])
@@ -253,6 +256,8 @@ class InfoContainer(object):
 					auxVenta += price
 					#Añadir datos al DataFrame
 					self.addRow(self.dfOut,aux)
+					#Modificar Datos del producto
+					
 					aux.clear()
 			#Guardar Datos
 			print(self.dfOut)
@@ -316,7 +321,7 @@ class InfoContainer(object):
 		for product in sold_Product:
 			#AGREGAR AL DATAFRAME DE TRUSTED
 			print(product['values'][0])
-			index=self.selectProducto([product['text'],product['values'][0]])			
+			index = self.selectProducto([product['text'],product['values'][0]])			
 			self.data_list[index].minusCantidad(1)				
 		return self.addingSale(sold_Product)	
 
@@ -324,16 +329,20 @@ class InfoContainer(object):
 		cont = 0
 		aux = []
 		for product in buyList:
-			aux.append(str(date.today())) #Fecha
+			aux.append(str(date.today()))
 			aux.append(overShape(str(date.today()),str(datetime.now()))) #Hora
-			print(product[0],product[1],product[2],product[3],product[4],product[5],product[6])
+			aux += product
+			aux.append(provider)
+			aux.append(username)
+			print(product[0],product[1],product[2],product[3],product[4],product[5])
 			#Codigo#Decripcion#Cambio/Compra#Granel	#Cantidad#Con o sin Iva #Precio
-			compra = product[2]
-			granel = product[3]
-			iva = product[5]
+
+			index = self.selectProducto([product[0:1]])
+			self.data_list[index].setIn(product,provider)
 
 			self.addRow(self.dfIn,aux)
-			
+			aux.clear()
+
 			cont += 1
 		print(self.dfIn)	
 
@@ -667,13 +676,13 @@ class Producto(object):
 		self.codigo=list_value[0] 
 		self.nombre=list_value[1]
 		self.precio=list_value[2]
-		self.cantidad_o=list_value[3]
-		self.cantidad=list_value[4]
+		self.cantidad_o=float(list_value[3])
+		self.cantidad=float(list_value[4])
 		self.rotacion=float(list_value[5])
 		self.granel=list_value[6]
 		self.proveedor=list_value[7]
 		self.porcentaje=20
-		self.precio_compra=list_value[2]*100/(100+self.porcentaje)
+		self.precio_compra=list_value[2]
 
 	def __init__(self, list_value ):						
 		self.porcentaje=20
@@ -703,9 +712,8 @@ class Producto(object):
 		else:
 			return False			
 
-	def granelado(self,_cantidad_o,_cantidad):
-		self.cantidad_o=_cantidad_o
-		self.cantidad=_cantidad
+	def granelado(self,_cantidad):
+		self.cantidad +=_cantidad
 		self.granel=True
 
 	def noGranelado(self):
@@ -727,12 +735,17 @@ class Producto(object):
 		return self.cantidad_o	
 	def setCantidad(self, cantidad):
 		self.cantidad=cantidad
-
-		#INCOMPLETO Y URGENTE		
+	def setProveedor(self,provider):
+		self.proveedor = provider	
+	
 	def plusCantidad(self,cantidad):
 		self.setCantidad(self.cantidad+cantidad)
 	def minusCantidad(self,cantidad):
-		self.setCantidad(self.cantidad-cantidad)		
+		if self.cantidad - float(cantidad) <= 0:
+			return False
+		else:				
+			self.setCantidad(self.cantidad-cantidad)		
+			return True
 
 	def calcularRotacion(self,time):
 			self.rotacion=(self.cantidad_o-self.cantidad)/time	
@@ -742,7 +755,19 @@ class Producto(object):
 	def setPrecioVenta(self,precio_compra):
 		self.precio_compra=int(precio_compra)
 		self.precio=int(self.precio_compra*((self.porcentaje+100)/100))
+
+	def setIn(self,listData,provider):
+		if listData[3]:
+			self.granelado(float(listData[3]))
+		else:
+			self.noGranelado()
+			self.plusCantidad(float(listData[3]))
+		self.setPrecioVenta(int(listData[5]))
+		self.setProveedor(provider)
+	def setOut(self,cantidad):
+		return self.minusCantidad(cantidad)	
 				
+			
 
 	##METODOS GET		
 	def Nombre(self):		

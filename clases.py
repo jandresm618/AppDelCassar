@@ -855,7 +855,6 @@ class InFrame(Frame):
 			print("Datos Validos ",chosen,type(chosen))
 			self.aux_window = Tk()
 			self.aux_window.protocol("WM_DELETE_WINDOW",self.closedWindow)
-
 			
 			self.newFlag=False
 			self.auxWindowWidgets=[]
@@ -1132,11 +1131,11 @@ class InFrame(Frame):
 		listData.append(False) #[2] Cambio/Compra - True/False
 		listData.append(self.var.get())#[3]	Granel
 		listData.append(float(self.quantityEntry.get()))#[4] Cantidad
-		listData.append(self.var1.get())#[5]	Con o sin IVA
+
 		if self.var1.get():			
-			listData.append(int(self.priceEntry.get()))#[6] Precio
+			listData.append(int(self.priceEntry.get()))#[5] Precio
 		else:
-			listData.append(int(self.priceEntry.get())*self.info_Container.getIva())#[6] Precio	
+			listData.append(int(self.priceEntry.get())*self.info_Container.getIva())#[5] Precio	
 
 		if self.validarDatos(listData):
 			self.message2['text']= ''
@@ -1151,7 +1150,11 @@ class InFrame(Frame):
 		auxList = []
 		dataList = []
 		newQuantity = self.quantityEntry.get()
-		newPrice = self.priceEntry.get()
+		if self.var1.get():			
+			newPrice = int(self.priceEntry.get())#[5] Precio
+		else:
+			newprice = int(self.priceEntry.get())*self.info_Container.getIva()#[5] Precio
+		
 		chosen = self.searchTable.selection()
 		flag = self.validarDatos([chosen])
 		if not flag:
@@ -1169,7 +1172,6 @@ class InFrame(Frame):
 				dataList.append(self.var2.get())#Cambio/Compra
 				dataList.append(self.var.get())#Granel			
 				dataList.append(float(newQuantity))#Cantidad
-				dataList.append(self.var1.get())#Con o sin Iva
 				dataList.append(int(newPrice)) #Precio
 				
 				chosen['values'][1] = int(newPrice)
@@ -1269,14 +1271,14 @@ class InFrame(Frame):
 		for i in records:
 				self.buyTable.delete(i)
 		for elem in buyList:
-			self.buyTable.insert("",0,text = elem[0],values= [elem[1],elem[6],elem[4]])		
+			self.buyTable.insert("",0,text = elem[0],values= [elem[1],elem[5],elem[4]])		
 
 	#!!!!!!!!!!!!!!IMCOPLETO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	def setNewProduct(self,listData):
 		#Agregar nuevos productos a la lista de productos
 		self.list_new_products.append(listData)
 		self.buyData.append(listData)
-		self.buyTable.insert("",10,text = listData[0],values=(listData[1],listData[6],listData[4]))		
+		self.buyTable.insert("",10,text = listData[0],values=(listData[1],listData[5],listData[4]))		
 
 
 	def validarDatos(self,listData):
