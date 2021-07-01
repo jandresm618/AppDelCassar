@@ -13,7 +13,7 @@ from tkinter import *
 class OutFrame(Frame):
 	def __init__(self,frame,info_Container):
 		super(OutFrame, self).__init__()
-		self.mainframe=frame
+		self.mainframe = frame
 		Frame.__init__(self, self.mainframe)
 		self.pack(fill='both', expand=True)
 
@@ -187,7 +187,7 @@ class OutFrame(Frame):
 
 	#Slot del boton buscar productos
 	def searchProduct(self):
-		self.results=self.info_Container.searchData(self.searchName.get())	
+		self.results = self.info_Container.searchData(self.searchName.get())	
 		if len(self.results) == 0:
 			self.message['text']='No se ha encontrado ningun producto.'	
 		else:
