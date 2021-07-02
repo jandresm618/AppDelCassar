@@ -271,7 +271,7 @@ class InfoContainer(object):
 		new_df2=pd.DataFrame(columns=self.ventas_columns)
 		try:
 			for product in sold_Product:
-				print("HORA: ",overShape(str(date.today()),str(datetime.now())))
+				#print("HORA: ",overShape(str(date.today()),str(datetime.now())))
 				#print("Dia de la semana ", date.today().weekday())							
 				new_df2.loc[cont]=[str(datetime.now()),int(product['text']),product['values'][0],int(product['values'][1]),buyername,username]
 				cont+=1
@@ -282,7 +282,7 @@ class InfoContainer(object):
 			return self.addingSale(sold_Product)
 
 		except Exception as e:
-			print("!!!!!!!!!!!!!!!!!!No se pudo completar!!!!!!!!!!\n",e)
+			print("ERROR: No se pudo completar la venta.\n",e)
 			return 0
 
 	#			"""ELIMINAR COLUMNA AL DATAFRAME"""
@@ -446,7 +446,7 @@ class InfoContainer(object):
 	def searchData(self, item):
 		cont_aux=0
 		self.search_list.clear()
-		print("PRODUCTOSSS")
+		#print("PRODUCTOSSS")
 		for i in self.data_list:	
 			if i.busquedaAvanzada(item):
 				cont_aux=cont_aux+1
