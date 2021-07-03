@@ -2,6 +2,7 @@ from tkinter import ttk
 from tkinter import *
 from tkinter import messagebox
 from manejo_datos import *
+from DataFrameBase import *
 
 class MainWindow(object):
 	"""docstring for MainWindow"""
@@ -84,6 +85,7 @@ class MainWindow(object):
 		self.frame['text'] = 'Bienvenidos a DelCassarApp'
 		self.frame.grid(row = 1, column= 0, columnspan=3, pady=5,padx=10)	
 
+	##################  Frame de Cabecera  #######################
 	def headerDesing(self):
 		self.headerFrame.grid(row = 0, column= 0, columnspan=20,sticky=W + E, pady=20)
 		self.saleButton.grid(row=1,column=0,sticky=W,padx=2)
@@ -98,9 +100,9 @@ class MainWindow(object):
 		#self.switchButton.grid(row=1,column=5,sticky=W,padx=2)	
 
 		self.exitButton.grid(row=1,column=7,sticky=W,padx=2)	
-			
-	def loadSearchFrame(self):
-		##################  Frame de busqueda de productos  #######################
+		
+	##################  Frame de busqueda de productos  #######################		
+	def loadSearchFrame(self):		
 		self.searchFrame = LabelFrame(self.frame)
 		self.searchFrame['text'] = 'Busqueda de Productos'
 		self.searchFrame.grid(row = 0, column= 0, columnspan=1, pady=1,padx=10)			
@@ -148,15 +150,21 @@ class MainWindow(object):
 		self.addProductButton['text']='Añadir al Carrito'
 		self.addProductButton.grid(row=5,column=0,sticky=W + E,columnspan=2,pady=10)
 		self.frameWidgets.append(self.addProductButton)		
-			
+		
+	##################  SLOT BOTON DE BUSQUEDA Y VENTA  #######################		
 	def	saleButtonSlot(self):
 		self.headerDesing()
 		self.loadSearchFrame()
+	##################  SLOT BOTON DE COMPRAS  #######################			
 	def	buyButtonSlot(self):
-		pass
+		path = "Archivos/Codigos.xlsx"
+		sheet = 'Hoja 1'
+		columns = ('Codigo','DESCRIPCION','PRECIO','Cantidad Inicial','Cantidad Actual','Rotacion','Granel','PROVEEDOR')
+		self.dataTest = DataFrameBase(path,sheet,columns)		
+	##################  SLOT BOTON DE CUADRE DIARIO  #######################				
 	def	cashRegisterButtonSlot(self):
 		pass
-
+	##################  SLOT BOTON DE SALIDA DEL PROGRAMA  #######################		
 	def exitSlot(self):		
 		#print(messagebox.askyesno(message="¿Desea continuar?", title="Título"))
 		if messagebox.askokcancel(message="¿Desea continuar?", title="AVISO"):
