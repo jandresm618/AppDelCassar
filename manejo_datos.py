@@ -32,7 +32,7 @@ def overShape(string1,string2):
 
 
 #CLASE InfoContainer: Esta clase se encarga de modelar el manejo de Informacion del negocio
-class InfoContainer(object):
+class InfoContainer(object):#Centro de App: Manipulacion de la informacion
 
 	def __init__(self):
 		self.cash_closed = False
