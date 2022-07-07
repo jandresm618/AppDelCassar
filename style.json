@@ -1,0 +1,27 @@
+{
+	"QMainWindow":[
+		{
+			"tittle":"DC UI",
+			"icon":":/images/icons/dc-logo.png",
+			"frameless": true,
+			"transluscentBg": true,
+			"sizeGrip": "sizeGrip",
+			
+			"navigation":[
+				{
+					"minimize":"minimizeButton",
+					"close": "closeWindowButton",
+					"restore":[
+						{	
+							"buttonName": "restoreButton",
+							"normalIcon": ":/icons/icons/original_svg/square.svg",
+							"maximizedIcon": ":/icons/icons/original_svg/copy.svg"
+						}
+					],
+					"moveWindow": "headerContainer",
+					"tittleBar": "headerContainer"
+				}
+			]
+		}
+	]
+}
