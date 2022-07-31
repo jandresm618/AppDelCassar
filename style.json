@@ -23,5 +23,31 @@
 				}
 			]
 		}
-	]
+	],
+	"QCustomSlideMenu": [{
+		"name": "leftMenuContainer",
+		"defaultSize": [{
+			"width": 50,
+			"height": "parent"
+		}],
+		"collapsedSize": [{
+			"width": 50,
+			"height": "parent"
+		}],
+		"expandedSize": [{
+			"width": 150,
+			"height": "parent"
+		}],
+		"toggleButton": [{
+			"buttonName": "menuButton",
+			"icons": [{
+				"whenMenuIsCollapsed": ":/icons/icons/original_svg/align-justify.svg",
+				"whenMenuIsExpanded": ":/icons/icons/original_svg/chevron-left.svg"
+			}]
+		}],
+		"menuTransitionAnimation": [{
+			"animationDuration": 500,
+			"animationEasingCurve": "Linear"
+		}]
+	}]
 }

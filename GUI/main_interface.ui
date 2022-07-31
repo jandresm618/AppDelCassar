@@ -69,7 +69,13 @@
      <number>0</number>
     </property>
     <item alignment="Qt::AlignLeft">
-     <widget class="QWidget" name="leftMenuContainer" native="true">
+     <widget class="QCustomSlideMenu" name="leftMenuContainer" native="true">
+      <property name="maximumSize">
+       <size>
+        <width>50</width>
+        <height>16777215</height>
+       </size>
+      </property>
       <property name="styleSheet">
        <string notr="true"/>
       </property>
@@ -194,7 +200,7 @@
 </string>
                </property>
                <property name="text">
-                <string>INICIO</string>
+                <string/>
                </property>
                <property name="icon">
                 <iconset resource="resources.qrc">
@@ -211,7 +217,7 @@
              <item alignment="Qt::AlignLeft">
               <widget class="QPushButton" name="opt1Button">
                <property name="text">
-                <string>VENTA</string>
+                <string/>
                </property>
                <property name="icon">
                 <iconset resource="resources.qrc">
@@ -228,7 +234,7 @@
              <item alignment="Qt::AlignLeft">
               <widget class="QPushButton" name="opt2Button">
                <property name="text">
-                <string>COMPRA</string>
+                <string/>
                </property>
                <property name="icon">
                 <iconset resource="resources.qrc">
@@ -245,7 +251,7 @@
              <item alignment="Qt::AlignLeft">
               <widget class="QPushButton" name="pushButton">
                <property name="text">
-                <string>INVENTARIO</string>
+                <string/>
                </property>
                <property name="icon">
                 <iconset resource="resources.qrc">
@@ -305,7 +311,7 @@
                 <string>Settings</string>
                </property>
                <property name="text">
-                <string>CONFIGURACION</string>
+                <string/>
                </property>
                <property name="icon">
                 <iconset resource="resources.qrc">
@@ -325,7 +331,7 @@
                 <string>Information</string>
                </property>
                <property name="text">
-                <string>INFORMACION</string>
+                <string/>
                </property>
                <property name="icon">
                 <iconset resource="resources.qrc">
@@ -345,7 +351,7 @@
                 <string>Help</string>
                </property>
                <property name="text">
-                <string>AYUDA</string>
+                <string/>
                </property>
                <property name="icon">
                 <iconset resource="resources.qrc">
@@ -369,7 +375,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QWidget" name="centerMenuContainer" native="true">
+     <widget class="QCustomSlideMenu" name="centerMenuContainer" native="true">
       <property name="minimumSize">
        <size>
         <width>0</width>
@@ -835,7 +841,7 @@
            </widget>
           </item>
           <item alignment="Qt::AlignRight">
-           <widget class="QWidget" name="rightMenuContainer" native="true">
+           <widget class="QCustomSlideMenu" name="rightMenuContainer" native="true">
             <property name="minimumSize">
              <size>
               <width>200</width>
@@ -979,7 +985,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QWidget" name="popupNotificationContainer" native="true">
+        <widget class="QCustomSlideMenu" name="popupNotificationContainer" native="true">
          <layout class="QVBoxLayout" name="verticalLayout_19">
           <item>
            <widget class="QWidget" name="popupNotificationSubContainer" native="true">
@@ -1119,6 +1125,14 @@
    </layout>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QCustomSlideMenu</class>
+   <extends>QWidget</extends>
+   <header location="global">Custom_Widgets.Widgets.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="resources.qrc"/>
  </resources>
